@@ -55,10 +55,12 @@ it can only be high if recall and precision rate are both high
 
 ## Planing 
 
-* explorative analysis
+### explorative analysis
+
 Any missing values, outliers, bias?
 
-* inferential analysis
+### inferential analysis
+
 This would allow us to select the most relevant features
 
 
