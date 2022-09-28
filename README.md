@@ -53,4 +53,12 @@ it can only be high if recall and precision rate are both high
 **PR curve**: adjust the decision boundary in order to achieve the Precision-Recall balance.
 
 
+## Planing 
+
+* explorative analysis
+Any missing values, outliers, bias?
+
+* inferential analysis
+This would allow us to select the most relevant features
+
 
