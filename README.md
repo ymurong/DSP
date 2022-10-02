@@ -59,6 +59,10 @@ it can only be high if recall and precision rate are both high
 
 Any missing values, outliers, bias?
 
+### basic visualiszation
+
+Correlation Matrix, Multidimensional Scaling
+
 ### inferential analysis
 
 This would allow us to select the most relevant features
