@@ -9,14 +9,17 @@ Related Notebooks:
 
 ### visualization & inferential analysis
 
-This would allow us to select the most relevant features (Correlation Matrix, PCA)
+This would allow us to select the most relevant features and possibly construct new features that correlate with fraud based on given dataset
 
 Related Notebooks:
 * [Time Independant](visualization_time_independant.ipynb)
   * Correlation Matrix (Cramer V, Theil U) between categorical features and Fraud
-  * PCA Viz to detect patterns between categorical features and Fraud
   * Euro Amounts Rank Sum Test
-  * (WIP) Assume that transaction amounts value counts should follow the general non fraud distribution, ip/account that don't follow the distribution (significant different) are more likely to have fraudulent transactions. Justify this by searching the account/ip that don't have the same distribution (by hypothesis testing) and visualize its fraud cases. Based on this, possibly construct a risk score (high, midium, low) for each account/ip. Test risk score correlation with the fraud
+  * PCA Viz to detect patterns between features and Fraud (eur_amount included and excluded)
+  * (WIP) Risk Score based on historical transactions (new feature)
+    * Would a client/ip whose transaction amount distribution differs from the general non fraud distribution indicates higher risk of fraud (Odds ratio) ?
+      Justify this by searching for the account/ip that don't have the same distribution (by hypothesis testing) and visualize its fraud cases. 
+      Based on this, possibly construct a risk score (high, midium, low) for each account/ip. Test risk score correlation with the fraud.
 
 * [Time Dependant](visualization_time_dependant.ipynb) (construct new features based on given dataset)
   * cumulative frauds for a given window time range (same ip, same account)
