@@ -1,3 +1,21 @@
+## Planing 
+
+### explorative analysis
+
+Any missing values, outliers, bias?
+
+Related Notebooks:
+[descriptive](descriptive.ipynb)
+
+### basic visualization & inferential analysis
+
+This would allow us to select the most relevant features (Correlation Matrix, PCA)
+
+Related Notebooks:
+[Time Independant](visualization_time_independant.ipynb)
+[Time Dependant](visualization_time_dependant.ipynb)
+
+
 ## UvA Deadlines
 
 26-30 Sept: meeting with the supervisor to discuss the current set of ideas`
@@ -52,19 +70,5 @@ it can only be high if recall and precision rate are both high
 
 **PR curve**: adjust the decision boundary in order to achieve the Precision-Recall balance.
 
-
-## Planing 
-
-### explorative analysis
-
-Any missing values, outliers, bias?
-
-### basic visualiszation
-
-Correlation Matrix, Multidimensional Scaling
-
-### inferential analysis
-
-This would allow us to select the most relevant features
 
 
