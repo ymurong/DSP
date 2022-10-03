@@ -7,7 +7,7 @@ Any missing values, outliers, bias?
 Related Notebooks:
 [descriptive](descriptive.ipynb)
 
-### basic visualization & inferential analysis
+### visualization & inferential analysis
 
 This would allow us to select the most relevant features (Correlation Matrix, PCA)
 
