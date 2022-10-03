@@ -16,7 +16,7 @@ Related Notebooks:
   * Correlation Matrix (Cramer V, Theil U) between categorical features and Fraud
   * PCA Viz to detect patterns between categorical features and Fraud
   * Euro Amounts Rank Sum Test
-  * (WIP) Euro Amounts / Fraud per account outlier existance? 
+  * (WIP) Assume that transaction amounts value counts should follow the general non fraud distribution, ip/account that don't follow the distribution (significant different) are more likely to have fraudulent transactions. Justify this by searching the account/ip that don't have the same distribution (by hypothesis testing) and visualize its fraud cases. Based on this, possibly construct a risk score (high, midium, low) for each account/ip. Test risk score correlation with the fraud
 
 * [Time Dependant](visualization_time_dependant.ipynb) (construct new features based on given dataset)
   * cumulative frauds for a given window time range (same ip, same account)
