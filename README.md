@@ -12,8 +12,18 @@ Related Notebooks:
 This would allow us to select the most relevant features (Correlation Matrix, PCA)
 
 Related Notebooks:
-[Time Independant](visualization_time_independant.ipynb)
-[Time Dependant](visualization_time_dependant.ipynb)
+* [Time Independant](visualization_time_independant.ipynb)
+  * Correlation Matrix (Cramer V, Theil U) between categorical features and Fraud
+  * PCA Viz to detect patterns between categorical features and Fraud
+  * Euro Amounts Rank Sum Test
+  * (WIP) Euro Amounts / Fraud per account outlier existance? 
+
+* [Time Dependant](visualization_time_dependant.ipynb) (construct new features based on given dataset)
+  * cumulative frauds for a given window time range (same ip, same account)
+  * eur amounts outlier for a given past time range
+
+
+
 
 
 ## UvA Deadlines
