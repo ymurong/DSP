@@ -20,14 +20,13 @@ Related Notebooks:
     * Would a client/ip whose transaction amount distribution differs from the general non fraud distribution indicates higher risk of fraud (Odds ratio) ?
       Justify this by searching for the account/ip that don't have the same distribution (by hypothesis testing) and visualize its fraud cases. 
       Based on this, possibly construct a risk score (high, midium, low) for each account/ip. Test risk score correlation with the fraud.
+    * Would a client/ip who had fraud before indicates higher risk of fraud? weighted historical frauds counts
 
 * [Time Dependant](visualization_time_dependant.ipynb) (construct new features based on given dataset)
   * cumulative frauds for a given window time range (same ip, same account)
   * eur amounts outlier for a given past time range
 
-
-
-
+  
 
 ## UvA Deadlines
 
