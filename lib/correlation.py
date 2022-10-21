@@ -43,10 +43,15 @@ def cramers_v(x, y):
 
 
 def calculate_woe_iv(dataset):
+    """
+    calculate weight of evidence and information value (entrophy based)
+    :param dataset:
+    :return:
+    """
     df = dataset.copy()
     df['pos_rate'] = (df['pos'] + 1) / df['pos'].sum()  # Calculate the proportion of responses (Y=1) within each grouping, plus 1 to prevent the numerator denominator from being 0 when calculating woe
     df['neg_rate'] = (df['neg'] + 1) / df['neg'].sum()  # Calculate the percentage of non-responses (Y=0) within each grouping
     df['woe'] = np.log(df['pos_rate'] / df['neg_rate'])  # Calculate the WOE for each grouping
-    df['iv'] = (df['pos_rate'] - df['neg_rate']) * df['woe']  # Calculate the IV for each grouping
+    df['iv'] = (df['pos_rate'] - df['neg_rate']) * df['woe']  # Calculate the IV for each grouping the higher the better
     iv = df['iv'].sum()
     return iv, df
