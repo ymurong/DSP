@@ -1,0 +1,100 @@
+<app-widgets-dropdown></app-widgets-dropdown>
+<c-row>
+  <c-col xs>
+    <c-card class="mb-4">
+      <c-card-header>Fraud Classifier</c-card-header>
+      <c-card-body>
+        <label cLabel for="sensitivity">Decision Boundary - <strong>{{classification_sensitivity}}</strong></label>
+        <input [(ngModel)]="classification_sensitivity"
+              cFormControl
+              id=""
+              max="1"
+              min="0"
+              step="0.01"
+              type="range" />
+      </c-card-body>
+      <c-card-footer>
+        <c-row class="text-center" [md]="3" [xs]="2">
+          <c-col class="mb-sm-2 mb-0">
+            <div class="text-medium-emphasis">F1 Score
+              <span cTooltip="F1 score measures a model's overall accuracy">
+                <svg class="text-info" cIcon name="cilInfo"></svg>
+              </span>
+            </div>
+            <strong>81%</strong>
+          </c-col>
+          <c-col class="mb-sm-2 mb-0">
+            <div class="text-medium-emphasis">Precision 
+              <span cTooltip="Precision measures the percentage of transactions predicted as fraud that were correctly classified">
+                <svg class="text-info" cIcon name="cilInfo"></svg>
+              </span>
+            </div>
+            <strong>71%</strong>
+          </c-col>
+          <c-col class="mb-sm-2 mb-0">
+            <div class="text-medium-emphasis">Recall 
+              <span cTooltip="Recall measures the percentage of real fraud transactions that were correctly identified">
+                <svg class="text-info" cIcon name="cilInfo"></svg>
+              </span>
+            </div>
+            <strong>96%</strong>
+          </c-col>
+        </c-row>
+      </c-card-footer>
+    </c-card>
+  </c-col>
+</c-row>
+
+
+
+<c-row>
+  <c-col xs>
+    <c-card class="mb-4">
+      <c-card-header>Transactions</c-card-header>
+      <c-card-body>
+        <table
+          [hover]="true"
+          [responsive]="true"
+          [striped]="true"
+          align="middle"
+          cTable
+          class="mb-0 border"
+        >
+          <thead cTableColor="light">
+          <tr>
+            <th>Email</th>
+            <th class="text-center">IP</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let user of users; index as i">
+            <td>
+              <div>{{ user.name }}</div>
+              <div class="small text-medium-emphasis">
+                <span>{{ user.state }}</span> | Registered:
+                {{ user.registered }}
+              </div>
+            </td>
+            <td class="text-center">
+              <svg cIcon
+                id="{{ user.country + user.name }}"
+                name="cif{{ user.country }}"
+                size="xl"
+                title="{{ user.country }}"
+              ></svg>
+            </td>
+            <td>
+              <strong>{{ user.status }}</strong>
+            </td>
+            <td>
+              <button cButton color="primary">explain</button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>
