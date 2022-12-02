@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 
 import { DashboardChartsData, IChartProps } from './dashboard-charts-data';
+import * as shape from 'd3-shape';
+
 
 interface IUser {
   name: string;
