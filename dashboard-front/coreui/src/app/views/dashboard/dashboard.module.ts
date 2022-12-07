@@ -22,6 +22,7 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import { WidgetsModule } from '../widgets/widgets.module';
 import { ExplanationComponent } from './explainability/explanation/explanation.component';
+import { DetailedChartsComponent } from './detailed-charts/detailed-charts.component';
 @NgModule({
   imports: [
     DashboardRoutingModule,
@@ -45,7 +46,7 @@ import { ExplanationComponent } from './explainability/explanation/explanation.c
     TooltipModule,
     NgxChartsModule
   ],
-  declarations: [DashboardComponent, ExplanationComponent]
+  declarations: [DashboardComponent, ExplanationComponent, DetailedChartsComponent]
 })
 export class DashboardModule {
 }
