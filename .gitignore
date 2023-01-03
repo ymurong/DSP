@@ -2,3 +2,6 @@
 .DS_Store
 __pycache__
 .ipynb_checkpoints
+
+backend/venv
+backend/transactions.sqlite3
