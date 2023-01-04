@@ -39,3 +39,4 @@ typing-extensions==4.4.0
 urllib3==1.26.13
 uvicorn==0.20.0
 zipp==3.11.0
+fastapi-pagination==0.11.1

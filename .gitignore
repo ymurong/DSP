@@ -5,3 +5,4 @@ __pycache__
 
 backend/venv
 backend/transactions.sqlite3
+backend/dsp_backend.egg-info
