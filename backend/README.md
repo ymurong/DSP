@@ -1,7 +1,9 @@
 # Version Control Collaboration Best Practice
 * If you work on some directory that you know there would be other people working on it, use a feature branch from dev branch
 * Make sure your feature branch is up-to-date with the dev branch before doing anything
+* Make sure your working branch is up-to-date with corresponding remote branch
 * ...
+
 
 # Setup Local Dev Environment
 
