@@ -1,4 +1,9 @@
-# Dev Setup
+# Version Control Collaboration Best Practice
+* If you work on some directory that you know there would be other people working on it, use a feature branch from dev branch
+* Make sure your feature branch is up-to-date with the dev branch before doing anything
+* ...
+
+# Setup Local Dev Environment
 
 ## 1.virtualenv setup
 The following example use python 3.11. The version of python must be greater than 3.6.
@@ -50,11 +55,11 @@ If count() gives 138701 rows then the import is successful.
 > To reinit the database, just delete the transactions.sqlite3 file, restart the application and re-import the data.
 
 
-# Debugging
+# How to Debug
 Please refer to this documentation: https://fastapi.tiangolo.com/tutorial/debugging/. 
 Pycharm has a known issue with python 3.11 together with uvicorn: https://youtrack.jetbrains.com/issue/PY-57217
 
-# Testing
+# How to Test
 Testing files are stored in tests directory. Naming conventions are following the best practice of pytest.
 Run the following command to test.
 ```bash
