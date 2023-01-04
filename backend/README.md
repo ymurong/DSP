@@ -2,6 +2,7 @@
 
 ## 1.virtualenv setup
 The following example use python 3.11. The version of python must be greater than 3.6.
+Make sure you run the following command in the backend directory so that the venv directory is in parallel with src directory.
 ```bash
 pip3.11 install virtualenv
 virtualenv venv --python=python3.11
@@ -47,3 +48,15 @@ select count() from transactions;
 If count() gives 138701 rows then the import is successful.
 
 > To reinit the database, just delete the transactions.sqlite3 file, restart the application and re-import the data.
+
+
+# Debugging
+Please refer to this documentation: https://fastapi.tiangolo.com/tutorial/debugging/. 
+Pycharm has a known issue with python 3.11 together with uvicorn: https://youtrack.jetbrains.com/issue/PY-57217
+
+# Testing
+Testing files are stored in tests directory. Naming conventions are following the best practice of pytest.
+Run the following command to test.
+```bash
+pytest
+```
