@@ -2,7 +2,7 @@
 .DS_Store
 __pycache__
 .ipynb_checkpoints
-
+.pytest_cache
 transactions.sqlite3
 test_transactions.sqlite3
 backend/venv
