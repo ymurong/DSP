@@ -3,7 +3,6 @@ import pandas as pd
 from lib.sampling import subsampling
 from sklearn.metrics import accuracy_score, roc_auc_score, f1_score, roc_curve, recall_score, precision_score
 from xgboost import XGBClassifier, plot_importance
-import seaborn as sn
 import matplotlib.pyplot as plt
 from lib.plot_util import correlation_matrix_plot
 import pickle
@@ -87,17 +86,27 @@ def feature_importance_selected(clf_model):
 def model_fit():
     """模型训练"""
     # XGBoost训练过程，下面的参数是调试出来的最佳参数组合
-    model = XGBClassifier(n_estimators=10, reg_alpha=6, reg_lambda=7)
-    model.fit(X_train_subset, y_train)
+    clf = XGBClassifier(n_estimators=37,
+                        max_depth=16,
+                        reg_alpha=5,
+                        reg_lambda=0.1256018512056365,
+                        subsample=0.9713864198195288,
+                        min_child_weight=0,
+                        max_delta_step=10,
+                        learning_rate=0.09,
+                        gamma=0.9323541633666959,
+                        colsample_bytree=0.8619613991732712
+                        )
+    clf.fit(X_train_subset, y_train)
 
     # 对验证集进行预测——类别
-    y_pred = model.predict(X_test)
+    y_pred = clf.predict(X_test)
     y_test_ = y_test.values
     print('y_test：', y_test_)
     print('y_pred：', y_pred)
 
     # 对验证集进行预测——概率
-    y_pred_proba = model.predict_proba(X_test)
+    y_pred_proba = clf.predict_proba(X_test)
     # 结果类别是1的概率
     y_pred_proba_ = []
     for i in y_pred_proba.tolist():
@@ -108,9 +117,9 @@ def model_fit():
     metrics_sklearn(y_test_, y_pred)
 
     # 模型特征重要性提取、展示和保存
-    feature_importance_selected(model)
+    feature_importance_selected(clf)
 
-    return model
+    return clf
 
 
 def model_save_type(clf_model):
