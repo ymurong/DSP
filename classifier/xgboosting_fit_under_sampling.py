@@ -1,9 +1,12 @@
 import numpy as np
 import pandas as pd
 from lib.sampling import subsampling
-import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, roc_auc_score, f1_score, roc_curve, recall_score, precision_score
 from xgboost import XGBClassifier, plot_importance
+import seaborn as sn
+import matplotlib.pyplot as plt
+from lib.plot_util import correlation_matrix_plot
+import pickle
 
 start_date = "2021-01-01"
 end_date = "2021-11-30"
@@ -19,17 +22,23 @@ df_sample = pd.concat([df_non_fraudulent_subsample, df_fraudulent], axis=0)
 
 X_train = df_sample.drop(["date", "psp_reference", "has_fraudulent_dispute", "is_refused_by_adyen"], axis=1)
 y_train = df_sample["has_fraudulent_dispute"]
-X_train_subset = pd.concat([X_train.loc(axis=1)["ip_node_degree":"card_page_rank"], X_train.loc(axis=1)[["is_credit"]],
-                            X_train.loc(axis=1)["ip_address_woe":"card_number_woe"]], axis=1)
+X_train_subset = pd.concat(
+    [X_train.loc(axis=1)["ip_node_degree", "card_node_degree", "email_node_degree"],
+     X_train.loc(axis=1)[["is_credit"]],
+     X_train.loc(axis=1)["ip_address_woe":"card_number_woe"],
+     X_train.loc(axis=1)["no_ip", "no_email", "same_country", "merchant_Merchant B", "merchant_Merchant C",
+     "merchant_Merchant D", "merchant_Merchant E", "card_scheme_MasterCard", "card_scheme_Other", "card_scheme_Visa",
+     "device_type_Linux", "device_type_MacOS", "device_type_Other", "device_type_Windows", "device_type_iOS", "shopper_interaction_POS"]],
+    axis=1)
 
-# X_train_subset = pd.concat([X_train.loc(axis=1)[["is_credit"]],
-#                             X_train.loc(axis=1)["ip_address_woe":"card_number_woe"]], axis=1)
-
+correlation_matrix_plot(X_train_subset)
 print(f"Train data size: {X_train_subset.shape[0]}")
+
 df_test = pd.read_csv("test_dataset_december.csv")
-X_test = pd.concat([df_test[["is_credit"]], df_test.loc(axis=1)["ip_node_degree":"card_number_woe"]], axis=1)
+X_test = df_test[X_train_subset.columns]
 y_test = df_test["has_fraudulent_dispute"]
-X_test = X_test[X_train_subset.columns]
+
+print(X_train_subset.columns)
 
 
 def metrics_sklearn(y_valid, y_pred_):
@@ -70,15 +79,15 @@ def feature_importance_selected(clf_model):
     print('特征重要性:', feature_importance)
 
     # 模型特征重要性绘图
-    plot_importance(clf_model)
+    fig, ax = plt.subplots(figsize=(13, 10))
+    plot_importance(clf_model, ax=ax)
     plt.show()
 
 
 def model_fit():
     """模型训练"""
     # XGBoost训练过程，下面的参数是调试出来的最佳参数组合
-    model = XGBClassifier(n_estimators=10, max_depth=3, min_child_weight=0.4,
-                          gamma=0.2)
+    model = XGBClassifier(n_estimators=10, reg_alpha=6, reg_lambda=7)
     model.fit(X_train_subset, y_train)
 
     # 对验证集进行预测——类别
@@ -106,11 +115,11 @@ def model_fit():
 
 def model_save_type(clf_model):
     # 模型训练完成后做持久化，模型保存为model模式，便于调用预测
-    clf_model.save_model('xgboost_classifier_model.model')
+    pickle.dump(clf_model, open("../backend/src/resources/pretrained_models/xgboost_classifier_model.pkl", "wb"))
 
     # 模型保存为文本格式，便于分析、优化和提供可解释性
-    clf = clf_model.get_booster()
-    clf.dump_model('dump.txt')
+    # clf = clf_model.get_booster()
+    # clf.dump_model('./output_models/dump.txt')
 
 
 if __name__ == '__main__':
@@ -121,4 +130,4 @@ if __name__ == '__main__':
     # 模型训练
     model_xgbclf = model_fit()
     # 模型保存：model和txt两种格式
-    # model_save_type(model_xgbclf)
+    model_save_type(model_xgbclf)

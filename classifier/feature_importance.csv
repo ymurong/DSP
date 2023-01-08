@@ -1,9 +1,15 @@
 特征名称,重要性
-is_credit,16.0
-card_number_woe,16.0
-ip_address_woe,12.0
-email_address_woe,12.0
-email_page_rank,2.0
-card_page_rank,2.0
-ip_eigen_centrality,1.0
-card_eigen_centrality,1.0
+card_number_woe,27.0
+is_credit,21.0
+ip_address_woe,16.0
+email_node_degree,14.0
+email_address_woe,14.0
+card_node_degree,11.0
+shopper_interaction_POS,10.0
+same_country,7.0
+merchant_Merchant D,5.0
+ip_node_degree,4.0
+device_type_iOS,3.0
+device_type_Linux,2.0
+merchant_Merchant C,1.0
+merchant_Merchant E,1.0
