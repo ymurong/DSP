@@ -32,11 +32,6 @@ X_test = df_test[X_train_subset.columns]
 y_test = df_test["has_fraudulent_dispute"]
 print(f"Test data size: {X_test.shape[0]}")
 
-# use pos_scale_weight to handle unbalanced dataset
-scale_pos_weight = y_train.value_counts().to_dict()[False] / y_train.value_counts().to_dict()[True]
-print(f"Neg/Pos Ratio: {y_train.value_counts().to_dict()}")
-print(f"pos_scale_weight: {scale_pos_weight}")
-
 
 def metrics_sklearn(y_valid, y_pred_):
     """model metrics output"""
