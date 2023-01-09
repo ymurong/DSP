@@ -1,24 +1,19 @@
-特征名称,重要性
-card_number_woe,339.0
-ip_address_woe,276.0
-email_address_woe,239.0
-ip_node_degree,183.0
-email_node_degree,169.0
-card_node_degree,149.0
-is_credit,120.0
-same_country,58.0
-merchant_Merchant C,50.0
-device_type_Other,48.0
-shopper_interaction_POS,46.0
-merchant_Merchant E,44.0
-device_type_Linux,35.0
-card_scheme_MasterCard,34.0
-card_scheme_Other,33.0
-device_type_iOS,31.0
-merchant_Merchant D,30.0
-merchant_Merchant B,29.0
-device_type_MacOS,20.0
-card_scheme_Visa,16.0
-device_type_Windows,15.0
-no_email,3.0
-no_ip,2.0
+feature,importance
+card_number_woe,71.0
+email_address_woe,59.0
+is_credit,48.0
+email_node_degree,41.0
+ip_address_woe,40.0
+shopper_interaction_POS,32.0
+card_node_degree,24.0
+ip_node_degree,13.0
+same_country,13.0
+device_type_Other,8.0
+no_ip,3.0
+device_type_iOS,3.0
+no_email,2.0
+merchant_Merchant C,1.0
+merchant_Merchant E,1.0
+card_scheme_MasterCard,1.0
+card_scheme_Other,1.0
+card_scheme_Visa,1.0
