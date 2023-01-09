@@ -4,7 +4,7 @@ from sklearn.metrics import accuracy_score, roc_auc_score, f1_score, roc_curve, 
 from xgboost import XGBClassifier, plot_importance
 import pickle
 
-from classifier.lib.plot_util import correlation_matrix_plot, plot_confusion_matrix
+from lib.plot_util import correlation_matrix_plot, plot_confusion_matrix
 
 start_date = "2021-01-01"
 end_date = "2021-11-30"
