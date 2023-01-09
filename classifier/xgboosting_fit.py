@@ -62,8 +62,8 @@ def feature_importance_selected(clf_model):
     feature_ipt = pd.DataFrame(feature_importance, columns=['feature', 'importance'])
     feature_ipt.to_csv('feature_importance.csv', index=False)
     print('feature importances:', feature_importance)
-
-    plot_importance(clf_model)
+    fig, ax = plt.subplots(figsize=(50, 30))
+    plot_importance(clf_model, ax=ax)
     plt.show()
 
 
