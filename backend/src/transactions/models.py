@@ -44,7 +44,7 @@ class Transactions(Base):
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
 
-    predictions = relationship("Predictions", back_populates="transactions", uselist=False)
+    prediction = relationship("Predictions", back_populates="transaction", uselist=False)
 
     def __repr__(self):
         return f'{self.psp_reference}_{self.created_at}'
@@ -58,7 +58,7 @@ class Predictions(Base):
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
 
-    transactions = relationship("Transactions", back_populates="predictions")
+    transaction = relationship("Transactions", back_populates="prediction")
 
     def __repr__(self):
         return f'{self.psp_reference}: predict_proba={self.predict_proba}'

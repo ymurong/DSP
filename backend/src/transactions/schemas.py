@@ -37,7 +37,7 @@ class CreateTransaction(BaseModel):
 
 class ReadTransaction(CreateTransaction):
     psp_reference: int
-    predictions: Optional[ReadPrediction]
+    prediction: Optional[ReadPrediction]
 
     class Config:
         orm_mode = True
