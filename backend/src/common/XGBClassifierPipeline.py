@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import logging
 import os
@@ -5,6 +6,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pickle
 from BasePipeline import BasePipeline
+import datetime
 
 logging.getLogger(__name__)
 
@@ -19,9 +21,9 @@ class XGBClassifierPipeline(BasePipeline):
             self.load_pipeline()
         self.model_params = model_params
 
-    def predict(self, X) -> pd.DataFrame:
-        res = self.pipeline.predict(X.copy())
-        return res
+    def predict(self, X_test: pd.DataFrame, threshold: float = 0.5) -> pd.DataFrame:
+        y_predict = (self.pipeline.predict_proba(X_test.copy())[:, 1] >= threshold).astype(bool)
+        return y_predict
 
     def load_pipeline(self, **kwargs) -> None:
         dir = os.path.dirname(os.path.abspath(__file__))
@@ -35,8 +37,7 @@ class XGBClassifierPipeline(BasePipeline):
         pickle.dump(self.pipeline, open(fname, "wb"))
 
     def eval(self, X_test: pd.DataFrame, y_test: pd.DataFrame):
-        print(type(self.pipeline))
-        predicted = self.pipeline.predict(X=X_test.copy())
+        predicted = self.predict(X_test=X_test.copy())
         self.metrics_sklearn(y_true=y_test, y_pred=predicted)
         return self.metrics
 
@@ -46,6 +47,13 @@ class XGBClassifierPipeline(BasePipeline):
         sns.set(font_scale=4)
         sns.heatmap(self.metrics["confusion_matrix"], annot=True, linewidths=.5, fmt='g', ax=ax)
         plt.show()
+
+    def predict_proba(self, X_test: pd.DataFrame):
+        """
+        :param X_test:
+        :return: probability of being positive
+        """
+        return self.pipeline.predict_proba(X_test.copy())[:, 1]
 
 
 if __name__ == '__main__':
@@ -68,3 +76,10 @@ if __name__ == '__main__':
 
     # plot confusion matrix
     pipeline.plot_confusion_matrix()
+
+    # produce prediction probability results with psp_reference
+    y_predict_proba = pd.Series(pipeline.predict_proba(X_test), name="predict_proba")
+    df_pred_prob = pd.concat([df_test["psp_reference"], y_predict_proba], axis=1)
+    df_pred_prob["created_at"] = pd.Series([datetime.datetime.now()]*df_pred_prob.shape[0])
+    df_pred_prob["updated_at"] = pd.Series([datetime.datetime.now()]*df_pred_prob.shape[0])
+    df_pred_prob.to_csv("../../predictions_dump.csv", index=False)

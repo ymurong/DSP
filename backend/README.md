@@ -49,8 +49,11 @@ In the sqlite3 interactive shell, type the following commands to import the csv 
 ```bash
 .mode csv transactions
 .separator ","
-.import --csv --skip 1 dump.csv transactions
+.import --csv --skip 1 transactions_dump.csv transactions
 select count() from transactions;
+
+.import --csv --skip 1 predictions_dump.csv predictions
+select count() from predictions;
 ```
 If count() gives 138701 rows then the import is successful.
 

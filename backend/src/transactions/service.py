@@ -6,7 +6,7 @@ from src.common.schema import OrderBy
 
 
 def get_transactions(db: Session, filters: schemas.TransactionFilter, order_by: OrderBy):
-    queryset = db.query(models.Transactions)
+    queryset = db.query(models.Transactions).outerjoin(models.Predictions)
     queryset = query_filter(queryset, filters, models.Transactions)
     queryset = query_sort(queryset, order_by, models.Transactions)
     return paginate(queryset)

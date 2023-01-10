@@ -1,13 +1,8 @@
 from abc import ABCMeta, abstractmethod
-import pandas as pd
-from xgboost import XGBClassifier
 import logging
 import os
 from sklearn.metrics import confusion_matrix, accuracy_score, roc_auc_score, f1_score, roc_curve, recall_score, \
     precision_score
-import matplotlib.pyplot as plt
-import seaborn as sns
-import pickle
 
 logging.getLogger(__name__)
 
