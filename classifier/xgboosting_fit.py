@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.metrics import accuracy_score, roc_auc_score, f1_score, roc_curve, recall_score, precision_score
+from sklearn.metrics import accuracy_score, roc_auc_score, f1_score, roc_curve, recall_score, precision_score, \
+    confusion_matrix
 from xgboost import XGBClassifier, plot_importance
 import pickle
 
@@ -53,6 +54,16 @@ def metrics_sklearn(y_valid, y_pred_):
     fpr, tpr, thresholds = roc_curve(y_valid, y_pred_)
     ks = max(abs(fpr - tpr))
     print('KS：%.2f%%' % (ks * 100))
+
+    block_rate = len(y_pred_[y_pred_ == True]) / len(y_pred_)
+    print('block_rate：%.2f%%' % (block_rate * 100))
+
+    false_neg = confusion_matrix(y_valid, y_pred_)[1, 0]
+    fraud_rate = false_neg / len(y_pred_[y_pred_ == False])
+    print('fraud_rate：%.2f%%' % (fraud_rate * 100))
+
+    conversion_rate = 1 - block_rate
+    print('conversion_rate：%.2f%%' % (conversion_rate * 100))
 
 
 def feature_importance_selected(clf_model):

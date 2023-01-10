@@ -5,14 +5,14 @@ import os
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pickle
-from BasePipeline import BasePipeline
+from src.common.BasePipeline import BasePipeline
 import datetime
 
 logging.getLogger(__name__)
 
 
 class XGBClassifierPipeline(BasePipeline):
-    def __init__(self, model_file_name="xgboost_classifier_model.pkl", model_training=False, model_params={},
+    def __init__(self, model_file_name, model_training=False, model_params={},
                  **kwargs):
         super(XGBClassifierPipeline, self).__init__(model_file_name=model_file_name, model_training=model_training)
         if model_training:
@@ -36,8 +36,8 @@ class XGBClassifierPipeline(BasePipeline):
         fname = os.path.join(dir, self.model_file_name)
         pickle.dump(self.pipeline, open(fname, "wb"))
 
-    def eval(self, X_test: pd.DataFrame, y_test: pd.DataFrame):
-        predicted = self.predict(X_test=X_test.copy())
+    def eval(self, X_test: pd.DataFrame, y_test: pd.DataFrame, threshold: float = 0.5):
+        predicted = self.predict(X_test=X_test.copy(), threshold=threshold)
         self.metrics_sklearn(y_true=y_test, y_pred=predicted)
         return self.metrics
 
@@ -80,6 +80,6 @@ if __name__ == '__main__':
     # produce prediction probability results with psp_reference
     y_predict_proba = pd.Series(pipeline.predict_proba(X_test), name="predict_proba")
     df_pred_prob = pd.concat([df_test["psp_reference"], y_predict_proba], axis=1)
-    df_pred_prob["created_at"] = pd.Series([datetime.datetime.now()]*df_pred_prob.shape[0])
-    df_pred_prob["updated_at"] = pd.Series([datetime.datetime.now()]*df_pred_prob.shape[0])
+    df_pred_prob["created_at"] = pd.Series([datetime.datetime.now()] * df_pred_prob.shape[0])
+    df_pred_prob["updated_at"] = pd.Series([datetime.datetime.now()] * df_pred_prob.shape[0])
     df_pred_prob.to_csv("../../predictions_dump.csv", index=False)

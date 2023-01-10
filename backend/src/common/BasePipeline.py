@@ -30,13 +30,17 @@ class BasePipeline(metaclass=ABCMeta):
 
     def metrics_sklearn(self, y_true, y_pred):
         fpr, tpr, thresholds = roc_curve(y_true, y_pred)
+        confusion_matrix_ = confusion_matrix(y_true, y_pred)
+        false_neg = confusion_matrix_[1, 0]
         self.metrics = {
             "accuracy": accuracy_score(y_true, y_pred),
             "precision": precision_score(y_true, y_pred),
             "recall": recall_score(y_true, y_pred),
             "f1": f1_score(y_true, y_pred),
             "auc": roc_auc_score(y_true, y_pred),
-            "confusion_matrix": confusion_matrix(y_true, y_pred),
+            "block_rate": len(y_pred[y_pred == True]) / len(y_pred),
+            "fraud_rate": false_neg / len(y_pred[y_pred == False]),
+            "confusion_matrix": confusion_matrix_,
             "ks": max(abs(fpr - tpr)),
         }
         return self.metrics
