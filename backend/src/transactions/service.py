@@ -6,6 +6,20 @@ from src.common.schema import OrderBy
 
 
 def get_transactions(db: Session, filters: schemas.TransactionFilter, order_by: OrderBy):
+    queryset = db.query(models.Transactions)
+    queryset = query_filter(queryset, filters, models.Transactions)
+    queryset = query_sort(queryset, order_by, models.Transactions)
+    return paginate(queryset)
+
+
+def get_predicted_transactions(db: Session, filters: schemas.TransactionFilter, order_by: OrderBy):
+    """
+    Only Transactions with Prediction Record would be returned
+    :param db:
+    :param filters:
+    :param order_by:
+    :return:
+    """
     queryset = db.query(models.Transactions).join(models.Predictions)
     queryset = query_filter(queryset, filters, models.Transactions)
     queryset = query_sort(queryset, order_by, models.Transactions)

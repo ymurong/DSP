@@ -16,7 +16,8 @@ def get_db():
         db.close()
 
 
-@metadata_app.get("/classifier/metrics/{classifier_name}", response_model=schemas.ClassifierMetrics)
+@metadata_app.get("/classifier/metrics/{classifier_name}", response_model=schemas.ClassifierMetrics,
+                  description="Provide chosen pretrained classifier metrics such as f1, precision, recall, auc, block_rate, fraud_rate")
 def get_classifier_metrics(
         classifier_name: ClassifierEnum,
         threshold: float = Query(0.5, ge=0, le=1),
@@ -25,7 +26,8 @@ def get_classifier_metrics(
     return classifier_metrics
 
 
-@metadata_app.get("/store/metrics", response_model=List[schemas.StoreMetrics])
+@metadata_app.get("/store/metrics", response_model=List[schemas.StoreMetrics],
+                  description="Provide store metrics such as total_revenue, chargeback_costs")
 def get_store_metrics(
         db: Session = Depends(get_db),
         threshold: float = Query(0.5, ge=0, le=1),

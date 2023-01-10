@@ -17,10 +17,11 @@ def get_db():
         db.close()
 
 
-@transaction_app.get("", response_model=Page[schemas.ReadTransaction])
+@transaction_app.get("", response_model=Page[schemas.ReadTransaction],
+                     description="Provide transactions with predicted records")
 def get_transactions(db: Session = Depends(get_db), filters: schemas.TransactionFilter = Depends(),
                      order_by: OrderBy = Depends()):
-    transactions = service.get_transactions(db, filters, order_by)
+    transactions = service.get_predicted_transactions(db, filters, order_by)
     return transactions
 
 
