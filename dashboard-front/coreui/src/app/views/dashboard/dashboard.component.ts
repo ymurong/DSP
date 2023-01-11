@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { TransactionsService } from './transactions.service'
+
 
 import { DashboardChartsData, IChartProps } from './dashboard-charts-data';
-import * as shape from 'd3-shape';
+import { Transaction } from './transaction';
+import { json } from 'stream/consumers';
 
 
 interface IUser {
@@ -20,12 +24,33 @@ interface IUser {
   riskscore: number;
 }
 
+interface ITransaction {
+  merchant: string;
+  card_schema: string;
+  is_credit: boolean;
+  eur_amount: Number;
+  ip_country: string;
+  issuing_country: string;
+  device_type: string;
+  ip_address: string;
+  email_address: string;
+  card_number: string;
+  shopper_interaction: string;
+  zip_code: string;
+  card_bin: string;
+  has_fraudulent_dispute: boolean;
+  is_refused_by_adyen: boolean;
+  created_at: Date;
+  updated_at: Date;
+  psp_reference: bigint;
+}
+
 @Component({
   templateUrl: 'dashboard.component.html',
   styleUrls: ['dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  constructor(private chartsData: DashboardChartsData) {
+  constructor(private chartsData: DashboardChartsData, private transactionsService: TransactionsService) {
   }
 
   public users: IUser[] = [
@@ -120,10 +145,32 @@ export class DashboardComponent implements OnInit {
     trafficRadio: new UntypedFormControl('Month')
   });
   public classification_sensitivity: Number = 0.5;
+  public transactions: Transaction[] = [];
+  public numTransactions: number = 0;
+  public sizePage: number = 0;
 
   ngOnInit(): void {
     this.initCharts();
+    this.initTransactionList();
+  }
 
+  initTransactionList(): void {
+    this.transactionsService.getTransactions().subscribe(
+      (transactionList: any) => {
+        console.log(transactionList)
+        this.initializeTransactions(transactionList["items"])
+        this.numTransactions = transactionList["total"]
+        this.sizePage = transactionList["size"]
+      }
+    );
+    console.log(this.transactions);
+  }
+
+  initializeTransactions(jsonResponse: any[]): void {
+    for (var transaction of jsonResponse){
+      const aux = transaction as ITransaction;
+      this.transactions.push(aux);
+    }
   }
 
   initCharts(): void {

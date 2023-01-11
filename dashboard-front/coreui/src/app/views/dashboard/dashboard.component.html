@@ -73,6 +73,7 @@
           <tr>
             <th>Email</th>
             <th class="text-center">IP</th>
+            <th>Amount</th>
             <th>Status</th>
             <th>Risk Score</th>
             <th>Action</th>
@@ -96,10 +97,13 @@
               ></svg>
             </td>
             <td>
+              70.0€
+            </td>
+            <td>
               <strong>{{ user.status }}</strong>
             </td>
             <td>
-              {{ user.riskscore }}
+              0.66
             </td>
             <td>
               <button cButton color="primary" data-bs-toggle="modal" attr.data-bs-target="#modalExplain{{i}}">
