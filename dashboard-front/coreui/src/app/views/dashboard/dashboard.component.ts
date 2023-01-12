@@ -7,6 +7,7 @@ import { TransactionsService } from './transactions.service'
 import { DashboardChartsData, IChartProps } from './dashboard-charts-data';
 import { Transaction } from './transaction';
 import { json } from 'stream/consumers';
+import { throwIfEmpty } from 'rxjs';
 
 
 interface IUser {
@@ -40,7 +41,9 @@ interface ITransaction {
   card_bin: string;
   has_fraudulent_dispute: boolean;
   is_refused_by_adyen: boolean;
+  status_verbose: string;
   created_at: Date;
+  created_at_string: string;
   updated_at: Date;
   psp_reference: bigint;
 }
@@ -145,9 +148,16 @@ export class DashboardComponent implements OnInit {
     trafficRadio: new UntypedFormControl('Month')
   });
   public classification_sensitivity: Number = 0.5;
-  public transactions: Transaction[] = [];
+  public transactions: ITransaction[] = [];
   public numTransactions: number = 0;
   public sizePage: number = 0;
+
+  public acceptedTransaction = false;
+  public rejectedTransaction = false;
+  public pspIReference!: number;
+
+  public available_pages: number[] = [1,2,3,4,5];
+  public current_page: number = 1;
 
   ngOnInit(): void {
     this.initCharts();
@@ -155,9 +165,10 @@ export class DashboardComponent implements OnInit {
   }
 
   initTransactionList(): void {
-    this.transactionsService.getTransactions().subscribe(
+    this.transactionsService.getTransactions(this.current_page).subscribe(
       (transactionList: any) => {
         console.log(transactionList)
+        this.transactions = [];
         this.initializeTransactions(transactionList["items"])
         this.numTransactions = transactionList["total"]
         this.sizePage = transactionList["size"]
@@ -168,13 +179,71 @@ export class DashboardComponent implements OnInit {
 
   initializeTransactions(jsonResponse: any[]): void {
     for (var transaction of jsonResponse){
-      const aux = transaction as ITransaction;
+      let aux = transaction as ITransaction;
+      aux = this.cleanAttributes(aux);
       this.transactions.push(aux);
     }
   }
 
+  cleanAttributes(transaction: ITransaction){
+    if (transaction.has_fraudulent_dispute){
+      transaction.status_verbose = "rejected";
+    } else {
+      transaction.status_verbose = "accepted";
+    }
+
+    transaction.created_at_string = transaction.created_at.toLocaleString().replace("T", " - ");
+    return transaction;
+  }
+
   initCharts(): void {
     this.mainChart = this.chartsData.mainChart;
+  }
+
+  //submitForms(): void {
+  //  document.getElementById("statusForm")
+  //}
+
+  applyFilters(): void {
+    this.transactionsService.getTransactionsFiltered(this.pspIReference, this.acceptedTransaction, this.rejectedTransaction, this.current_page).subscribe(
+      (transactionList: any) => {
+        this.transactions = [];
+        this.initializeTransactions(transactionList["items"])
+        this.numTransactions = transactionList["total"]
+        this.sizePage = transactionList["size"]
+      }
+    );
+    //alert([this.acceptedTransaction, this.rejectedTransaction, this.pspIReference]);
+  }
+
+  goToPage(page_number: number): void {
+    const last_page = Math.floor(this.numTransactions/this.sizePage) + 1;
+    if (page_number != -1){
+      this.current_page = page_number;
+    } else {
+      this.current_page = last_page;
+    }
+    this.initTransactionList();
+  }
+
+  moveToPage(pages: number): void {
+    const last_page = Math.floor(this.numTransactions/this.sizePage) + 1;
+    this.current_page = this.current_page + pages;
+    if (this.current_page < 1){
+      this.current_page = 1;
+    } else if (this.current_page > last_page){
+      this.current_page = last_page;
+    }
+    this.initTransactionList();
+  }
+
+  update_pagination() {
+    const last_page = Math.floor(this.numTransactions/this.sizePage) + 1;
+    /*if (false //this.current_page >) {
+
+    } else if (false//this.current_page) {
+      
+    }*/
   }
 
   setTrafficPeriod(value: string): void {

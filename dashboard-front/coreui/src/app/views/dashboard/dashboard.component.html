@@ -46,7 +46,7 @@
           </c-col>
           <c-col class="mb-sm-2 mb-0">
             <div style="display: flex; align-items: center; margin-top: 7px;">
-            <button type="button" class="btn btn-outline-success"><strong>Apply Changes </strong></button></div>
+            <button type="button" class="btn btn-outline-success"><strong>Change Boundary</strong></button></div>
           </c-col>
         </c-row>
       </c-card-footer>
@@ -59,7 +59,27 @@
 <c-row>
   <c-col xs>
     <c-card class="mb-4">
-      <c-card-header><b>Transactions</b></c-card-header>
+      <c-card-header>
+        <div style="float:left; margin-right: 5px; vertical-align: middle;">
+          <b >Transactions</b>
+        </div>
+      <div style="float:right; margin-right: 5px; vertical-align: middle;">
+        <form id="statusForm" (submit)="applyFilters()">
+          <span style="margin-right: 20px;">
+            <input type="number" id="Reference" placeholder="Search Reference:" name="reference" [(ngModel)]="pspIReference"/>
+          </span>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="inlineCheckbox1" name="accepted" [(ngModel)]="acceptedTransaction">
+            <label class="form-check-label" for="inlineCheckbox1">Accepted Transactions</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="inlineCheckbox2" name="rejected" [(ngModel)]="rejectedTransaction">
+            <label class="form-check-label" for="inlineCheckbox2">Rejected Transactions</label>
+          </div>
+          <button type="button" class="btn btn-outline-dark" (click)="applyFilters()">Apply Filters</button>
+        </form>
+      </div> 
+      </c-card-header>
       <c-card-body>
         <table
           [hover]="true"
@@ -71,7 +91,7 @@
         >
           <thead cTableColor="light">
           <tr>
-            <th>Email</th>
+            <th>Reference</th>
             <th class="text-center">IP</th>
             <th>Amount</th>
             <th>Status</th>
@@ -80,27 +100,29 @@
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let user of users; index as i">
+          <tr *ngFor="let transaction of transactions; index as i">
             <td>
-              <div>{{ user.name }}</div>
+              <div>{{ transaction.psp_reference }}</div>
               <div class="small text-medium-emphasis">
-                <span>{{ user.state }}</span> | Registered:
-                {{ user.registered }}
+                <span>{{ transaction.card_schema }}</span> | Executed:
+                {{ transaction.created_at_string }}
               </div>
             </td>
             <td class="text-center">
+              {{ transaction.ip_country }}
+              <!--
               <svg cIcon
-                id="{{ user.country + user.name }}"
-                name="cif{{ user.country }}"
+                id="{{ transaction.ip_address + transaction.ip_country }}"
+                name="cif{{ transaction.ip_country }}"
                 size="xl"
-                title="{{ user.country }}"
-              ></svg>
+                title="{{ transaction.ip_country }}"
+              ></svg> -->
             </td>
             <td>
-              70.0€
+              {{ transaction.eur_amount }}€
             </td>
             <td>
-              <strong>{{ user.status }}</strong>
+              <strong>{{ transaction.status_verbose }}</strong>
             </td>
             <td>
               0.66
@@ -114,7 +136,7 @@
               <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Why it has been {{user.status}}?</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Why it has been {{transaction.status_verbose}}?</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
@@ -131,6 +153,17 @@
           </tbody>
         </table>
       </c-card-body>
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+          <li class="page-item"><a class="page-link" (click)="goToPage(1)">First</a></li>
+          <li class="page-item"><a class="page-link" (click)="moveToPage(-1)">Previous</a></li>
+          <li class="page-item active"><a class="page-link">{{ current_page }}</a></li>
+          <li class="page-item"><a class="page-link" (click)="moveToPage(1)">{{ current_page + 1 }}</a></li>
+          <li class="page-item"><a class="page-link" (click)="moveToPage(2)">{{ current_page + 2 }}</a></li>
+          <li class="page-item"><a class="page-link" (click)="moveToPage(1)">Next</a></li>
+          <li class="page-item"><a class="page-link" (click)="goToPage(-1)">Last</a></li>
+        </ul>
+      </nav>
     </c-card>
   </c-col>
 </c-row>

@@ -38,6 +38,7 @@ import { HttpClientModule } from '@angular/common/http';
     ReactiveFormsModule,
     ButtonModule,
     FormModule,
+    FormsModule,
     ButtonModule,
     ButtonGroupModule,
     ChartjsModule,

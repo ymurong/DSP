@@ -10,3 +10,18 @@
 span {
   cursor: pointer;
 }
+
+.button_aligned {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+input[type=text] {
+  padding: 3px 8px;
+  margin: 3px 0;
+  box-sizing: border-box;
+  border: 5px;
+  border-radius: 6px; 
+}
