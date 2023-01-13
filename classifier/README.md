@@ -2,10 +2,11 @@
 
 This directory is used to train and tune the model in order to produce pre-trained model and feed to backend.
 
-* Trainset: [final_features.ipynb](../feature-engineering/final_features.ipynb) is used to produce the final train csv
-  file final_features_2021-11-30.csv
-* Testset: [prepare_test_data.ipynb](./prepare_test_data.ipynb) is used to produce the test csv file
-  test_dataset_december.csv
+* Feature Dataset: [final_features.ipynb](../feature-engineering/final_features.ipynb) is used to produce the final train csv
+  file final_features.csv
+
+## Benchmark
+* Training: [model_benchmark.py](./model_benchmark.py) is used to benchmark different models (xgboost, random forest, etc).
 
 ## XGboosting
 
@@ -16,8 +17,9 @@ This directory is used to train and tune the model in order to produce pre-train
 After training, the model would be saved under the **backend/src/resources/pretrained_models** directory called *
 *xgboost_classifier_model.pkl**
 
-## Random Forest
+## XGboost Random Forest
 
-* Tuning&Training: [random_forest.ipynb](./random_forest.ipynb) is used to do experiments with random forest such as
-  tuning, training and testing.
+* Tuning: [xgboosting_rf_tuning_hyperopt.py](./xgboosting_rf_tuning_hyperopt.py) is used to find the best parameters for
+  XGboosting. The automatic tuning would take approximately half an hour.
+
 
