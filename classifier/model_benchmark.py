@@ -1,19 +1,22 @@
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
-from xgboost import XGBClassifier,XGBRFClassifier
+from xgboost import XGBClassifier, XGBRFClassifier
+from lightgbm import LGBMClassifier
 from classifier.lib.model_selection import fit_model_and_get_predictions, get_train_test_set, \
     performance_assessment_model_collection
 import datetime
 import pandas as pd
 
-classifiers_dictionary = {'Decision tree with depth of two': DecisionTreeClassifier(max_depth=2,
-                                                                                    random_state=0),
-                          'Decision tree - unlimited depth': DecisionTreeClassifier(random_state=0),
-                          'Random forest': RandomForestClassifier(random_state=0, class_weight="balanced_subsample",
-                                                                  n_jobs=-1),
-                          'XGBoost': XGBClassifier(random_state=0, scale_pos_weight=13, n_jobs=-1),
-                          'XGBoost Random Forest': XGBRFClassifier(random_state=0, scale_pos_weight=13, n_jobs=-1),
-                          }
+classifiers_dictionary = {
+    # 'Decision tree with depth of two': DecisionTreeClassifier(max_depth=2,
+    #                                                           random_state=0),
+    # 'Decision tree - unlimited depth': DecisionTreeClassifier(random_state=0),
+    'Random forest': RandomForestClassifier(random_state=0, max_depth=5, class_weight="balanced_subsample",
+                                            n_jobs=-1),
+    'XGBoost': XGBClassifier(random_state=0, max_depth=2, scale_pos_weight=12.12, n_jobs=-1),
+    'XGBoost Random Forest': XGBRFClassifier(random_state=0, max_depth=5, scale_pos_weight=12.12, n_jobs=-1),
+    'LightGBM': LGBMClassifier(random_state=0, objective='binary', max_depth=3, scale_pos_weight=12.12, n_jobs=-1)
+}
 
 input_features = ['is_credit', 'no_ip', 'no_email', 'same_country', 'merchant_Merchant B',
                   'merchant_Merchant C', 'merchant_Merchant D', 'merchant_Merchant E',
