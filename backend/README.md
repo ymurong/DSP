@@ -46,6 +46,7 @@ sqlite3 transactions.sqlite3
 ```
 
 In the sqlite3 interactive shell, type the following commands to import the csv file called dump.csv.
+> IMPORTANT: For windows, don't include the --skip 1 option but for Mac the --skip 1 option is compulsory
 ```bash
 .mode csv transactions
 .separator ","
