@@ -1,4 +1,5 @@
 from src.transactions import transaction_app
+from src.metadata import metadata_app
 from fastapi import FastAPI, Request
 import uvicorn
 from fastapi_pagination import add_pagination
@@ -34,6 +35,8 @@ app.add_middleware(
 )
 
 app.include_router(transaction_app, prefix='/transactions', tags=['transactions'])
+app.include_router(metadata_app, prefix='/metadata', tags=['metadata'])
+
 
 add_pagination(app)
 

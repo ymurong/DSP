@@ -1,116 +1,96 @@
-import numpy as np
 import pandas as pd
-from lib.sampling import subsampling
-import matplotlib.pyplot as plt
-from sklearn.metrics import accuracy_score, roc_auc_score, f1_score, roc_curve, recall_score, precision_score
-from xgboost import XGBClassifier, plot_importance
+from xgboost import XGBClassifier
+import pickle
+from lib.model_selection import get_train_test_set, metrics_sklearn, scale_data
+from lib.plot_util import correlation_matrix_plot, plot_confusion_matrix, feature_importance_selected
+import datetime
 
-start_date = "2021-01-01"
-end_date = "2021-11-30"
+# extract trainset final features
+df_features = pd.read_csv(f"../feature-engineering/final_features.csv")
+df_features["tx_datetime"] = pd.to_datetime(df_features["tx_datetime"])
+df_train, df_test = get_train_test_set(
+    df_features,
+    start_date_training=datetime.datetime(2021, 1, 1),
+    delta_train=(datetime.datetime(2021, 10, 31) - datetime.datetime(2021, 1,
+                                                                     1)).days,
+    delta_delay=(datetime.datetime(2021, 11, 30) - datetime.datetime(2021, 11,
+                                                                     1)).days,
+    delta_test=(datetime.datetime(2021, 12, 31) - datetime.datetime(2021, 12,
+                                                                    1)).days
+)
 
-df_features = pd.read_csv(f"../feature-engineering/final_features_{end_date}.csv")
-X_train = df_features.drop(["date", "psp_reference", "has_fraudulent_dispute", "is_refused_by_adyen"], axis=1)
-y_train = df_features["has_fraudulent_dispute"]
+columns = ['is_credit', 'no_ip', 'no_email', 'same_country', 'merchant_Merchant B',
+           'merchant_Merchant C', 'merchant_Merchant D', 'merchant_Merchant E',
+           'card_scheme_MasterCard', 'card_scheme_Other', 'card_scheme_Visa',
+           'device_type_Linux', 'device_type_MacOS', 'device_type_Other',
+           'device_type_Windows', 'device_type_iOS', 'shopper_interaction_POS',
+           'is_night', 'is_weekend', 'diff_tx_time_in_hours',
+           'is_diff_previous_ip_country', 'card_nb_tx_1day_window',
+           'card_avg_amount_1day_window', 'card_nb_tx_7day_window',
+           'card_avg_amount_7day_window', 'card_nb_tx_30day_window',
+           'card_avg_amount_30day_window', 'email_address_nb_tx_1day_window',
+           'email_address_risk_1day_window', 'email_address_nb_tx_7day_window',
+           'email_address_risk_7day_window', 'email_address_nb_tx_30day_window',
+           'email_address_risk_30day_window', 'ip_address_nb_tx_1day_window',
+           'ip_address_risk_1day_window', 'ip_address_nb_tx_7day_window',
+           'ip_address_risk_7day_window', 'ip_address_nb_tx_30day_window',
+           'ip_address_risk_30day_window']
 
-X_train_subset = pd.concat([X_train.loc(axis=1)["ip_node_degree":"card_page_rank"], X_train.loc(axis=1)[["is_credit"]],
-                            X_train.loc(axis=1)["ip_address_woe":"card_number_woe"]], axis=1)
+X_train = df_train[columns]
+y_train = df_train["has_fraudulent_dispute"]
+print(f"Train data size: {X_train.shape[0]}")
 
-# X_train_subset = pd.concat([X_train.loc(axis=1)[["is_credit"]],
-#                             X_train.loc(axis=1)["ip_address_woe":"card_number_woe"]], axis=1)
-
-print(f"Train data size: {X_train_subset.shape[0]}")
-df_test = pd.read_csv("test_dataset_december.csv")
-X_test = pd.concat([df_test[["is_credit"]], df_test.loc(axis=1)["ip_node_degree":"card_number_woe"]], axis=1)
+X_test = df_test[X_train.columns]
 y_test = df_test["has_fraudulent_dispute"]
-X_test = X_test[X_train_subset.columns]
+print(f"Test data size: {X_test.shape[0]}")
+
+correlation_matrix_plot(X_train)
 
 
-def metrics_sklearn(y_valid, y_pred_):
-    """模型对验证集和测试集结果的评分"""
-    # 准确率
-    accuracy = accuracy_score(y_valid, y_pred_)
-    print('Accuracy：%.2f%%' % (accuracy * 100))
+def model_fit(X_train, y_train):
+    """model train and test"""
+    model = XGBClassifier(n_estimators=125,
+                          # max_depth=1,
+                          # reg_alpha=2,
+                          # reg_lambda=8.459380860954308,
+                          # subsample=0.6175542840963739,
+                          # min_child_weight=1,
+                          # max_delta_step=6,
+                          # learning_rate=0.3,
+                          # gamma=0.8265170906861968,
+                          # colsample_bytree=0.8177519479936957,
+                          scale_pos_weight=14)
+    model.fit(X_train, y_train)
 
-    # 精准率
-    precision = precision_score(y_valid, y_pred_)
-    print('Precision：%.2f%%' % (precision * 100))
-
-    # 召回率
-    recall = recall_score(y_valid, y_pred_)
-    print('Recall：%.2f%%' % (recall * 100))
-
-    # F1值
-    f1 = f1_score(y_valid, y_pred_)
-    print('F1：%.2f%%' % (f1 * 100))
-
-    # auc曲线下面积
-    auc = roc_auc_score(y_valid, y_pred_)
-    print('AUC：%.2f%%' % (auc * 100))
-
-    # ks值
-    fpr, tpr, thresholds = roc_curve(y_valid, y_pred_)
-    ks = max(abs(fpr - tpr))
-    print('KS：%.2f%%' % (ks * 100))
-
-
-def feature_importance_selected(clf_model):
-    """模型特征重要性提取与保存"""
-    # 模型特征重要性打印和保存
-    feature_importance = clf_model.get_booster().get_fscore()
-    feature_importance = sorted(feature_importance.items(), key=lambda x: x[1], reverse=True)
-    feature_ipt = pd.DataFrame(feature_importance, columns=['特征名称', '重要性'])
-    feature_ipt.to_csv('feature_importance.csv', index=False)
-    print('特征重要性:', feature_importance)
-
-    # 模型特征重要性绘图
-    plot_importance(clf_model)
-    plt.show()
-
-
-def model_fit():
-    """模型训练"""
-    # XGBoost训练过程，下面的参数是调试出来的最佳参数组合
-    model = XGBClassifier()
-    model.fit(X_train_subset, y_train)
-
-    # 对验证集进行预测——类别
-    y_pred = model.predict(X_test)
-    y_test_ = y_test.values
-    print('y_test：', y_test_)
-    print('y_pred：', y_pred)
-
-    # 对验证集进行预测——概率
-    y_pred_proba = model.predict_proba(X_test)
-    # 结果类别是1的概率
-    y_pred_proba_ = []
-    for i in y_pred_proba.tolist():
-        y_pred_proba_.append(i[1])
-    print('y_pred_proba：', y_pred_proba_)
-
-    # 模型对验证集预测结果评分
-    metrics_sklearn(y_test_, y_pred)
-
-    # 模型特征重要性提取、展示和保存
-    feature_importance_selected(model)
+    # model features importance extraction
+    feature_importance_selected(model, figsize=(30, 30))
 
     return model
 
 
-def model_save_type(clf_model):
-    # 模型训练完成后做持久化，模型保存为model模式，便于调用预测
-    clf_model.save_model('xgboost_classifier_model.model')
+def model_predict(X_test, y_test, model, threshold=0.5):
+    y_pred_proba_ = model.predict_proba(X_test.copy())[:, 1]
+    y_pred = (y_pred_proba_ >= threshold).astype(bool)
 
-    # 模型保存为文本格式，便于分析、优化和提供可解释性
-    clf = clf_model.get_booster()
-    clf.dump_model('dump.txt')
+    # calculate model metrics
+    metrics_sklearn(y_test.values, y_pred, y_pred_proba_)
+    # plot confusion matrix
+    plot_confusion_matrix(y_test.values, y_pred)
+
+
+def model_save_type(clf_model):
+    """persistence of model after training"""
+    pickle.dump(clf_model, open("../backend/src/resources/pretrained_models/xgboost_classifier_model.pkl", "wb"))
 
 
 if __name__ == '__main__':
-    """
-        模型训练、评分与保存
-        结论：训练集k折交叉验证带来的模型评分提升，未必会在测试集上得到提升
-    """
-    # 模型训练
-    model_xgbclf = model_fit()
-    # 模型保存：model和txt两种格式
-    # model_save_type(model_xgbclf)
+    # scale
+    scale = True
+    if scale:
+        X_train, X_test = scale_data(X_train, X_test)
+    # model training
+    model_xgbclf = model_fit(X_train, y_train)
+    # model prediction
+    model_predict(X_test, y_test, model_xgbclf, threshold=0.5)
+    # model persistence
+    model_save_type(model_xgbclf)

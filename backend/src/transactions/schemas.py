@@ -4,6 +4,17 @@ from pydantic import BaseModel
 from src.common.schema import Filter
 
 
+class CreatePrediction(BaseModel):
+    predict_proba: float
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
+
+
+class ReadPrediction(CreatePrediction):
+    class Config:
+        orm_mode = True
+
+
 class CreateTransaction(BaseModel):
     merchant: str
     card_schema: str
@@ -26,8 +37,7 @@ class CreateTransaction(BaseModel):
 
 class ReadTransaction(CreateTransaction):
     psp_reference: int
-    updated_at: datetime
-    created_at: datetime
+    prediction: Optional[ReadPrediction]
 
     class Config:
         orm_mode = True

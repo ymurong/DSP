@@ -1,4 +1,5 @@
-from sqlalchemy import Column, String, BigInteger, Boolean, Float, DateTime, func
+from sqlalchemy import Column, String, BigInteger, Boolean, Float, DateTime, func, ForeignKey
+from sqlalchemy.orm import relationship, backref
 from random import randint
 
 from .database import Base, engine
@@ -43,5 +44,21 @@ class Transactions(Base):
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
 
+    prediction = relationship("Predictions", back_populates="transaction", uselist=False)
+
     def __repr__(self):
         return f'{self.psp_reference}_{self.created_at}'
+
+
+class Predictions(Base):
+    __tablename__ = 'predictions'  # 数据表的表名
+
+    psp_reference = Column(BigInteger, ForeignKey("transactions.psp_reference"), primary_key=True, index=True)
+    predict_proba = Column(Float, nullable=False, comment='prediction probability')
+    created_at = Column(DateTime, server_default=func.now())
+    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
+
+    transaction = relationship("Transactions", back_populates="prediction")
+
+    def __repr__(self):
+        return f'{self.psp_reference}: predict_proba={self.predict_proba}'
