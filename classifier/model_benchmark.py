@@ -1,5 +1,5 @@
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, VotingClassifier
 from xgboost import XGBClassifier, XGBRFClassifier
 from lightgbm import LGBMClassifier
 from classifier.lib.model_selection import fit_model_and_get_predictions, get_train_test_set, \
@@ -7,7 +7,7 @@ from classifier.lib.model_selection import fit_model_and_get_predictions, get_tr
 import datetime
 import pandas as pd
 
-classifiers_dictionary = {
+classifiers_dictionary_0 = {
     # 'Decision tree with depth of two': DecisionTreeClassifier(max_depth=2,
     #                                                           random_state=0),
     # 'Decision tree - unlimited depth': DecisionTreeClassifier(random_state=0),
@@ -18,7 +18,21 @@ classifiers_dictionary = {
     'LightGBM': LGBMClassifier(random_state=0, objective='binary', max_depth=3, scale_pos_weight=12.12, n_jobs=-1)
 }
 
-input_features = ['is_credit', 'no_ip', 'no_email', 'same_country', 'merchant_Merchant B',
+classifiers_dictionary = {
+    # 'Decision tree with depth of two': DecisionTreeClassifier(max_depth=2,
+    #                                                           random_state=0),
+    # 'Decision tree - unlimited depth': DecisionTreeClassifier(random_state=0),
+    'Random forest': RandomForestClassifier(random_state=0, max_depth=5, class_weight="balanced_subsample",
+                                            n_jobs=-1),
+    'XGBoost': XGBClassifier(random_state=0, max_depth=2, scale_pos_weight=12.12, n_jobs=-1),
+    'XGBoost Random Forest': XGBRFClassifier(random_state=0, max_depth=5, scale_pos_weight=12.12, n_jobs=-1),
+    'LightGBM': LGBMClassifier(random_state=0, objective='binary', max_depth=3, scale_pos_weight=12.12, n_jobs=-1),
+    'VotingClassifier': VotingClassifier(estimators=list(classifiers_dictionary_0.items()),
+                                         voting='soft', weights=[1, 1, 2, 1],
+                                         flatten_transform=True, n_jobs=-1)
+}
+
+input_features = ['is_credit', 'same_country', 'merchant_Merchant B',
                   'merchant_Merchant C', 'merchant_Merchant D', 'merchant_Merchant E',
                   'card_scheme_MasterCard', 'card_scheme_Other', 'card_scheme_Visa',
                   'device_type_Linux', 'device_type_MacOS', 'device_type_Other',
@@ -42,8 +56,8 @@ def extract_train_test(final_feature_path="../feature-engineering/final_features
     df_features["tx_datetime"] = pd.to_datetime(df_features["tx_datetime"])
     df_train, df_test = get_train_test_set(
         df_features,
-        start_date_training=datetime.datetime(2021, 1, 1),
-        delta_train=(datetime.datetime(2021, 10, 31) - datetime.datetime(2021, 1,
+        start_date_training=datetime.datetime(2021, 7, 1),
+        delta_train=(datetime.datetime(2021, 10, 31) - datetime.datetime(2021, 7,
                                                                          1)).days,
         delta_delay=(datetime.datetime(2021, 11, 30) - datetime.datetime(2021, 11,
                                                                          1)).days,

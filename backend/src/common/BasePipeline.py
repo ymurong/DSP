@@ -10,7 +10,7 @@ logging.getLogger(__name__)
 class BasePipeline(metaclass=ABCMeta):
     def __init__(self, model_file_name, model_training=False, **kwargs):
         self.model_file_name = model_file_name
-        self.metrics = {}
+        self.metrics = None
 
     @abstractmethod
     def predict(self, X):

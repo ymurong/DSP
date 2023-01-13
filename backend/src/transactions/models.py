@@ -26,7 +26,7 @@ class Transactions(Base):
 
     psp_reference = Column(BigInteger, primary_key=True, index=True, default=random_integer)
     merchant = Column(String(1), nullable=False, comment='merchant type')
-    card_schema = Column(String(10), nullable=False, comment='card type')
+    card_scheme = Column(String(10), nullable=False, comment='card type')
     is_credit = Column(Boolean, nullable=False, comment='is credit card or not')
     eur_amount = Column(Float, nullable=False)
     ip_country = Column(String(2), nullable=False)
