@@ -24,7 +24,7 @@ Evaluation Metrics includes:
 - conversion_rate  
 - average_precision
 
-Trained models will out stored under pretrained_models directory for further analysis
+Trained models are dumped under pretrained_models directory for further analysis.
 
 
 ## Tuning
