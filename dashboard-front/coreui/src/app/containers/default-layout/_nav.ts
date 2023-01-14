@@ -4,7 +4,12 @@ export const navItems: INavData[] = [
   {
     name: 'Risk Dashboard',
     url: '/dashboard',
-    iconComponent: { name: 'cil-speedometer' },
+    iconComponent: { name: 'cil-speedometer' }
+  },
+  {
+    name: 'Analytics',
+    url: '/dashboard/charts',
+    iconComponent: {name: 'cil-chart'}
   },
   {
     title: true,

@@ -119,13 +119,13 @@
               ></svg> -->
             </td>
             <td>
-              {{ transaction.eur_amount }}€
+              {{ transaction.eur_amount | number:'1.2-2' }}€
             </td>
             <td>
               <strong>{{ transaction.status_verbose }}</strong>
             </td>
             <td>
-              0.66
+              {{ transaction.prediction.predict_proba | number:'1.4-4' }}
             </td>
             <td>
               <button cButton color="primary" data-bs-toggle="modal" attr.data-bs-target="#modalExplain{{i}}">
@@ -155,13 +155,13 @@
       </c-card-body>
       <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
-          <li class="page-item"><a class="page-link" (click)="goToPage(1)">First</a></li>
+          <li class="page-item"><a class="page-link" (click)="goToPage(1)">{{ 1 }} (First)</a></li>
           <li class="page-item"><a class="page-link" (click)="moveToPage(-1)">Previous</a></li>
           <li class="page-item active"><a class="page-link">{{ current_page }}</a></li>
           <li class="page-item"><a class="page-link" (click)="moveToPage(1)">{{ current_page + 1 }}</a></li>
           <li class="page-item"><a class="page-link" (click)="moveToPage(2)">{{ current_page + 2 }}</a></li>
           <li class="page-item"><a class="page-link" (click)="moveToPage(1)">Next</a></li>
-          <li class="page-item"><a class="page-link" (click)="goToPage(-1)">Last</a></li>
+          <li class="page-item"><a class="page-link" (click)="goToPage(-1)">{{ last_page }} (Last)</a></li>
         </ul>
       </nav>
     </c-card>
