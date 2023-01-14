@@ -6,7 +6,9 @@
     - [Training](#training)
     - [Evaluation](#evaluation)
     - [Feature Importance](#feature-importance)
+    - [Model Dump](#model-dump)
   - [Tuning](#tuning)
+
 
 # Classifier Directory
 
@@ -47,6 +49,7 @@ Evaluation Metrics includes:
 ### Feature Importance
 Feature Importance results of each model (except voting) are stored under feature_importance directory.
 
+### Model Dump
 Trained models are dumped under pretrained_models directory for further analysis.
 
 
