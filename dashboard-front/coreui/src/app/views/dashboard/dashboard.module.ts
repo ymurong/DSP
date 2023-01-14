@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule,FormsModule } from '@angular/forms';
 import { TooltipModule } from '@coreui/angular';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 import {
   AvatarModule,
@@ -20,7 +21,8 @@ import { ChartjsModule } from '@coreui/angular-chartjs';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import { WidgetsModule } from '../widgets/widgets.module';
-
+import { ExplanationComponent } from './explainability/explanation/explanation.component';
+import { DetailedChartsComponent } from './detailed-charts/detailed-charts.component';
 @NgModule({
   imports: [
     DashboardRoutingModule,
@@ -41,9 +43,10 @@ import { WidgetsModule } from '../widgets/widgets.module';
     TableModule,
     WidgetsModule,
     FormsModule,
-    TooltipModule
+    TooltipModule,
+    NgxChartsModule
   ],
-  declarations: [DashboardComponent]
+  declarations: [DashboardComponent, ExplanationComponent, DetailedChartsComponent]
 })
 export class DashboardModule {
 }

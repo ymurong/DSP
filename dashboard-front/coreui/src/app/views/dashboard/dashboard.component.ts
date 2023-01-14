@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 
 import { DashboardChartsData, IChartProps } from './dashboard-charts-data';
+import * as shape from 'd3-shape';
+
 
 interface IUser {
   name: string;
@@ -15,6 +17,7 @@ interface IUser {
   avatar: string;
   status: string;
   color: string;
+  riskscore: number;
 }
 
 @Component({
@@ -37,7 +40,8 @@ export class DashboardComponent implements OnInit {
       activity: '10 sec ago',
       avatar: './assets/img/avatars/1.jpg',
       status: 'accepted',
-      color: 'success'
+      color: 'success',
+      riskscore: 0.16
     },
     {
       name: 'Avram Tarasios',
@@ -50,7 +54,8 @@ export class DashboardComponent implements OnInit {
       activity: '5 minutes ago',
       avatar: './assets/img/avatars/2.jpg',
       status: 'refused',
-      color: 'info'
+      color: 'info',
+      riskscore: 0.65
     },
     {
       name: 'Quintin Ed',
@@ -63,7 +68,8 @@ export class DashboardComponent implements OnInit {
       activity: '1 hour ago',
       avatar: './assets/img/avatars/3.jpg',
       status: 'refused',
-      color: 'warning'
+      color: 'warning',
+      riskscore: 0.88
     },
     {
       name: 'Enéas Kwadwo',
@@ -76,7 +82,8 @@ export class DashboardComponent implements OnInit {
       activity: 'Last month',
       avatar: './assets/img/avatars/4.jpg',
       status: 'accepted',
-      color: 'danger'
+      color: 'danger',
+      riskscore: 0.45
     },
     {
       name: 'Agapetus Tadeáš',
@@ -89,7 +96,8 @@ export class DashboardComponent implements OnInit {
       activity: 'Last week',
       avatar: './assets/img/avatars/5.jpg',
       status: 'accepted',
-      color: 'primary'
+      color: 'primary',
+      riskscore: 0.38
     },
     {
       name: 'Friderik Dávid',
@@ -102,7 +110,8 @@ export class DashboardComponent implements OnInit {
       activity: 'Yesterday',
       avatar: './assets/img/avatars/6.jpg',
       status: 'accepted',
-      color: 'dark'
+      color: 'dark',
+      riskscore: 0.38
     }
   ];
   public mainChart: IChartProps = {};
