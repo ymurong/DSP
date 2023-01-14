@@ -28,13 +28,15 @@ class XGBClassifierPipeline(BasePipeline):
     def load_pipeline(self, **kwargs) -> None:
         dir = os.path.dirname(os.path.abspath(__file__))
         fname = os.path.join(dir, self.model_file_name)
-        pickled_model = pickle.load(open(fname, 'rb'))
-        self.pipeline = pickled_model
+        with open(fname, 'rb') as handle:
+            pickled_model = pickle.load(handle)
+            self.pipeline = pickled_model
 
     def save_pipeline(self) -> None:
         dir = os.path.dirname(os.path.abspath(__file__))
         fname = os.path.join(dir, self.model_file_name)
-        pickle.dump(self.pipeline, open(fname, "wb"))
+        with open(fname, 'wb') as handle:
+            pickle.dump(self.pipeline, handle)
 
     def eval(self, X_test: pd.DataFrame, y_test: pd.DataFrame, threshold: float = 0.5):
         predicted = self.predict(X_test=X_test.copy(), threshold=threshold)

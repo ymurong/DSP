@@ -18,6 +18,18 @@ def plot_confusion_matrix(y_true, y_pred, h=15, w=15):
     plt.show()
 
 
+def plot_feature_importance(clf_model, input_features, nlargest=15, figsize=(20, 10), fontsize=10, show=False, export=True):
+    feat_importances = pd.Series(clf_model.feature_importances_, index=input_features)
+    ax = feat_importances.nlargest(nlargest).sort_values(ascending=True).plot(kind='barh', figsize=figsize)
+    plt.bar_label(ax.containers[0], fontsize=fontsize)
+    plt.yticks(fontsize=fontsize)
+    plt.title(f"{clf_model.__class__.__name__} Feature Importance")
+    if export:
+        plt.savefig(f"./feature_importance/{clf_model.__class__.__name__}_feature_importance.png")
+    if show:
+        plt.show()
+
+
 def feature_importance_selected(clf_model, figsize=(100, 30)):
     """features importances output"""
     feature_importance = clf_model.get_booster().get_fscore()

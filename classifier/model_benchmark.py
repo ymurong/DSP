@@ -1,29 +1,33 @@
-from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, VotingClassifier
 from xgboost import XGBClassifier, XGBRFClassifier
 from lightgbm import LGBMClassifier
+from catboost import CatBoostClassifier
 from classifier.lib.model_selection import fit_model_and_get_predictions, get_train_test_set, \
     performance_assessment_model_collection
 import datetime
 import pandas as pd
+import pickle
+
+from lib.plot_util import plot_feature_importance
 
 classifiers_dictionary_0 = {
-    # 'Decision tree with depth of two': DecisionTreeClassifier(max_depth=2,
-    #                                                           random_state=0),
-    # 'Decision tree - unlimited depth': DecisionTreeClassifier(random_state=0),
-    'Random forest': RandomForestClassifier(random_state=0, n_estimators=95, max_depth=9, criterion="log_loss",
-                                            max_features="sqrt",
-                                            class_weight="balanced_subsample",
-                                            n_jobs=-1),
-    'XGBoost': XGBClassifier(random_state=0, max_depth=2, scale_pos_weight=12.12, n_jobs=-1),
-    'XGBoost Random Forest': XGBRFClassifier(random_state=0, max_depth=5, scale_pos_weight=12.12, n_jobs=-1),
+    'RandomForest': RandomForestClassifier(random_state=0, n_estimators=95, max_depth=9, criterion="log_loss",
+                                           max_features="sqrt",
+                                           class_weight="balanced_subsample",
+                                           n_jobs=-1),
+    'XGBoost': XGBClassifier(random_state=0, max_depth=2, scale_pos_weight=12.12, eval_metric='mlogloss',
+                             use_label_encoder=False, n_jobs=-1),
+    'XGBoostRF': XGBRFClassifier(random_state=0, max_depth=5, scale_pos_weight=12.12,
+                                 eval_metric='mlogloss',
+                                 use_label_encoder=False, n_jobs=-1),
+    'CatBoost': CatBoostClassifier(random_state=0, silent=True),
     'LightGBM': LGBMClassifier(random_state=0, objective='binary', max_depth=3, scale_pos_weight=12.12, n_jobs=-1)
 }
 
 classifiers_dictionary = {
     **classifiers_dictionary_0,
     'VotingClassifier': VotingClassifier(estimators=list(classifiers_dictionary_0.items()),
-                                         voting='soft', weights=[12, 1, 6, 1],
+                                         voting='soft', weights=[12, 1, 1, 6, 1],
                                          flatten_transform=True, n_jobs=-1)
 }
 
@@ -80,9 +84,28 @@ def assessment(fitted_models_and_predictions_dictionary, df_test, threshold=0.5)
     return performances
 
 
+def plot_feature_importances(fitted_models_and_predictions_dictionary, nlargest=15, figsize=(20, 10), fontsize=10,
+                             export=True, show=False):
+    for classifier_name, model_and_predictions in fitted_models_and_predictions_dictionary.items():
+        if classifier_name != "VotingClassifier":
+            plot_feature_importance(model_and_predictions['classifier'], input_features, nlargest=nlargest,
+                                    figsize=figsize,
+                                    fontsize=fontsize, export=export, show=show)
+
+
+def dump_models(fitted_models_and_predictions_dictionary):
+    for classifier_name, model_and_predictions in fitted_models_and_predictions_dictionary.items():
+        with open(f"./pretrained_models/{classifier_name}.pickle", 'wb') as handle:
+            pickle.dump(model_and_predictions['classifier'], handle)
+
+
 if __name__ == '__main__':
     threshold = 0.5
+    DUMP = True
     df_train, df_test = extract_train_test()
     fitted_models_and_predictions_dictionary = fit_predict(df_train, df_test, input_features)
     performances = assessment(fitted_models_and_predictions_dictionary, df_test, threshold=threshold)
+    plot_feature_importances(fitted_models_and_predictions_dictionary, export=True, show=False)
+    if DUMP:
+        dump_models(fitted_models_and_predictions_dictionary)
     print(performances.to_string())

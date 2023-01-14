@@ -10,7 +10,7 @@ This directory is used to train and tune the model in order to produce pre-train
 
 ## XGboosting
 
-* Tuning: [xgboosting_tuning_hyperopt.py](./xgboosting_tuning_hyperopt.py) is used to find the best parameters for
+* Tuning: [xgboosting_tuning_hyperopt.py](model_tuning/xgboosting_tuning_hyperopt.py) is used to find the best parameters for
   XGboosting. The automatic tuning would take approximately half an hour.
 * Training: [xgboosting_fit.py](./xgboosting_fit.py) is used to train the model.
 
@@ -19,7 +19,7 @@ After training, the model would be saved under the **backend/src/resources/pretr
 
 ## XGboost Random Forest
 
-* Tuning: [xgboosting_rf_tuning_hyperopt.py](./xgboosting_rf_tuning_hyperopt.py) is used to find the best parameters for
+* Tuning: [xgboosting_rf_tuning_hyperopt.py](model_tuning/xgboosting_rf_tuning_hyperopt.py) is used to find the best parameters for
   XGboosting. The automatic tuning would take approximately half an hour.
 
 
