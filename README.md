@@ -5,10 +5,10 @@
   - [Presentation Slides](#presentation-slides)
   - [Explorative Analysis](#explorative-analysis)
   - [Visualization \& Inferential Analysis](#visualization--inferential-analysis)
-    - [Feature Engineering](#feature-engineering)
-    - [Classifier Training/Evaluation](#classifier-trainingevaluation)
-    - [Backend](#backend)
-    - [Dashboard](#dashboard)
+  - [Feature Engineering](#feature-engineering)
+  - [Classifier Training/Evaluation](#classifier-trainingevaluation)
+  - [Backend](#backend)
+  - [Dashboard](#dashboard)
 
 ## UvA Deadlines
 
@@ -55,23 +55,23 @@ Related Notebooks:
   * eur amounts outlier for a given past time range
 
 
-### Feature Engineering
+## Feature Engineering
 
 Check the [FE_README.md](./feature-engineering/README.md) for details.
 
-### Classifier Training/Evaluation
+## Classifier Training/Evaluation
 
 Check the [CLASSIFIER_README.md](./classifier/README.md) for details.
 
 
-### Backend
+## Backend
 
 Check the [BACKEND_README.md](./backend/README.md) for details. 
 
 The backend provides online openapi documentation http://127.0.0.1:8000/docs 
 
 
-### Dashboard
+## Dashboard
 
 Check the [DASHBOARD_README.md](./dashboard-front/coreui/README.md) for details. 
 
