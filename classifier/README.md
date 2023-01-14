@@ -6,20 +6,29 @@ This directory is used to train and tune the model in order to produce pre-train
   file final_features.csv
 
 ## Benchmark
-* Training: [model_benchmark.py](./model_benchmark.py) is used to benchmark different models (xgboost, random forest, etc).
+Training/Evaluation/Dump: [model_benchmark.py](./model_benchmark.py) is used to benchmark different models:
+* random forest
+* xgboost
+* catboost
+* xgboost random forest
+* lgbm
 
-## XGboosting
+Evaluation Metrics includes: 
+- accuracy  
+- precision    
+- recall        
+- f1       
+- auc  
+- block_rate  
+- fraud_rate  
+- conversion_rate  
+- average_precision
 
-* Tuning: [xgboosting_tuning_hyperopt.py](model_tuning/xgboosting_tuning_hyperopt.py) is used to find the best parameters for
-  XGboosting. The automatic tuning would take approximately half an hour.
-* Training: [xgboosting_fit.py](./xgboosting_fit.py) is used to train the model.
-
-After training, the model would be saved under the **backend/src/resources/pretrained_models** directory called *
-*xgboost_classifier_model.pkl**
-
-## XGboost Random Forest
-
-* Tuning: [xgboosting_rf_tuning_hyperopt.py](model_tuning/xgboosting_rf_tuning_hyperopt.py) is used to find the best parameters for
-  XGboosting. The automatic tuning would take approximately half an hour.
+Trained models will out stored under pretrained_models directory for further analysis
 
 
+## Tuning
+
+Optuna is used to tune the hyperparams of the listed models. [random_forest_optuna_tuning.ipynb](./model_tuning/random_forest_optuna_tuning.ipynb) demonstrates an example of how we tune the model.
+
+Tuning results are store under model_tuning directory. [optuna_results.ipynb](./model_tuning/optuna_results.ipynb) gives a report of the tuning interpretation.
