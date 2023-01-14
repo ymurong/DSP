@@ -11,7 +11,9 @@ classifiers_dictionary_0 = {
     # 'Decision tree with depth of two': DecisionTreeClassifier(max_depth=2,
     #                                                           random_state=0),
     # 'Decision tree - unlimited depth': DecisionTreeClassifier(random_state=0),
-    'Random forest': RandomForestClassifier(random_state=0, max_depth=5, class_weight="balanced_subsample",
+    'Random forest': RandomForestClassifier(random_state=0, n_estimators=95, max_depth=9, criterion="log_loss",
+                                            max_features="sqrt",
+                                            class_weight="balanced_subsample",
                                             n_jobs=-1),
     'XGBoost': XGBClassifier(random_state=0, max_depth=2, scale_pos_weight=12.12, n_jobs=-1),
     'XGBoost Random Forest': XGBRFClassifier(random_state=0, max_depth=5, scale_pos_weight=12.12, n_jobs=-1),
@@ -19,16 +21,9 @@ classifiers_dictionary_0 = {
 }
 
 classifiers_dictionary = {
-    # 'Decision tree with depth of two': DecisionTreeClassifier(max_depth=2,
-    #                                                           random_state=0),
-    # 'Decision tree - unlimited depth': DecisionTreeClassifier(random_state=0),
-    'Random forest': RandomForestClassifier(random_state=0, max_depth=5, class_weight="balanced_subsample",
-                                            n_jobs=-1),
-    'XGBoost': XGBClassifier(random_state=0, max_depth=2, scale_pos_weight=12.12, n_jobs=-1),
-    'XGBoost Random Forest': XGBRFClassifier(random_state=0, max_depth=5, scale_pos_weight=12.12, n_jobs=-1),
-    'LightGBM': LGBMClassifier(random_state=0, objective='binary', max_depth=3, scale_pos_weight=12.12, n_jobs=-1),
+    **classifiers_dictionary_0,
     'VotingClassifier': VotingClassifier(estimators=list(classifiers_dictionary_0.items()),
-                                         voting='soft', weights=[1, 1, 2, 1],
+                                         voting='soft', weights=[12, 1, 6, 1],
                                          flatten_transform=True, n_jobs=-1)
 }
 
