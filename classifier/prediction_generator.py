@@ -102,7 +102,7 @@ if __name__ == '__main__':
 
     classifier = "XGBoost"
     df_pred_prob_all = pd.DataFrame(columns=['psp_reference', 'predict_proba', 'created_at', 'updated_at'])
-    for df_train, df_test in train_test_monthly_generator(test_start_month=11, test_end_month=12, year=2021):
+    for df_train, df_test in train_test_monthly_generator(test_start_month=7, test_end_month=12, year=2021):
         fitted_models_and_predictions_dictionary = fit_predict(df_train, df_test, input_features)
         y_predict_proba = pd.Series(fitted_models_and_predictions_dictionary[classifier]["predictions_test"],
                                     name="predict_proba")
