@@ -113,4 +113,4 @@ if __name__ == '__main__':
 
     # make sure no duplicated transactions predictions results generated
     assert not (df_pred_prob_all["psp_reference"].duplicated().any())
-    df_pred_prob_all.to_csv("../../predictions_dump.csv", index=False)
+    df_pred_prob_all.to_csv("../backend/predictions_dump.csv", index=False)
