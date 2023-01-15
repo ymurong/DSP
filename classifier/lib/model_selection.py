@@ -25,11 +25,11 @@ def get_train_test_set(transactions_df,
     """
     # Get the training set data
     train_df = transactions_df[(transactions_df.tx_datetime >= start_date_training) & (
-            transactions_df.tx_datetime < start_date_training + datetime.timedelta(days=delta_train + 1))]
+            transactions_df.tx_datetime < start_date_training + datetime.timedelta(days=delta_train))]
 
     # Get the test set data
     test_df = transactions_df[
-        (transactions_df.tx_datetime >= start_date_training + datetime.timedelta(days=delta_train + delta_delay + 1)) &
+        (transactions_df.tx_datetime >= start_date_training + datetime.timedelta(days=delta_train + delta_delay)) &
         (transactions_df.tx_datetime < start_date_training + datetime.timedelta(
             days=delta_train + delta_delay + delta_test))]
 

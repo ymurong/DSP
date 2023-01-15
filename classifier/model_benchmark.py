@@ -2,13 +2,20 @@ from sklearn.ensemble import RandomForestClassifier, VotingClassifier
 from xgboost import XGBClassifier, XGBRFClassifier
 from lightgbm import LGBMClassifier
 from catboost import CatBoostClassifier
-from classifier.lib.model_selection import fit_model_and_get_predictions, get_train_test_set, \
+from lib.model_selection import fit_model_and_get_predictions, get_train_test_set, \
     performance_assessment_model_collection
 import datetime
 import pandas as pd
 import pickle
-
+from lib.mutation_util import daysOfMonth
 from lib.plot_util import plot_feature_importance
+
+TEST_START_MONTH = 12
+TRAIN_DURATION = 3
+TEST_DURATION = 1
+DELAY_DURATION = 1
+DELAY_START_MONTH = TEST_START_MONTH - DELAY_DURATION
+TRAIN_START_MONTH = TEST_START_MONTH - DELAY_DURATION - TRAIN_DURATION
 
 classifiers_dictionary_0 = {
     'RandomForest': RandomForestClassifier(random_state=0, n_estimators=95, max_depth=9, criterion="log_loss",
@@ -53,18 +60,25 @@ input_features = ['is_credit', 'same_country', 'merchant_Merchant B',
 
 
 def extract_train_test(final_feature_path="../feature-engineering/final_features.csv"):
-    # extract trainset final features
+    """
+    delta_train -> days of training period
+    delta_delay -> days of delay period
+    delta_test> days of testing period
+    """
     df_features = pd.read_csv(final_feature_path)
     df_features["tx_datetime"] = pd.to_datetime(df_features["tx_datetime"])
+
+    start_date_training = datetime.datetime(2021, TRAIN_START_MONTH, 1)
+    delta_train = daysOfMonth(TRAIN_START_MONTH, TRAIN_START_MONTH + TRAIN_DURATION - 1)
+    delta_delay = daysOfMonth(DELAY_START_MONTH, DELAY_START_MONTH + DELAY_DURATION - 1)
+    delta_test = daysOfMonth(TEST_START_MONTH, TEST_START_MONTH + TEST_DURATION - 1)
+
     df_train, df_test = get_train_test_set(
         df_features,
-        start_date_training=datetime.datetime(2021, 8, 1),
-        delta_train=(datetime.datetime(2021, 10, 31) - datetime.datetime(2021, 8,
-                                                                         1)).days,
-        delta_delay=(datetime.datetime(2021, 11, 30) - datetime.datetime(2021, 11,
-                                                                         1)).days,
-        delta_test=(datetime.datetime(2021, 12, 31) - datetime.datetime(2021, 12,
-                                                                        1)).days
+        start_date_training=start_date_training,
+        delta_train=delta_train,
+        delta_delay=delta_delay,
+        delta_test=delta_test
     )
     return df_train, df_test
 
@@ -111,11 +125,14 @@ def adyen_results(final_feature_path="../feature-engineering/final_features.csv"
 if __name__ == '__main__':
     threshold = 0.5
     DUMP = True
-    adyen_results()
+    # adyen_results()
     df_train, df_test = extract_train_test()
     fitted_models_and_predictions_dictionary = fit_predict(df_train, df_test, input_features)
     performances = assessment(fitted_models_and_predictions_dictionary, df_test, threshold=threshold)
     plot_feature_importances(fitted_models_and_predictions_dictionary, export=True, show=False)
     if DUMP:
         dump_models(fitted_models_and_predictions_dictionary)
+
+    print(f"Training Months: {TRAIN_START_MONTH} -> {TRAIN_START_MONTH + TRAIN_DURATION - 1}")
+    print(f"Testing Months: {TEST_START_MONTH} -> {TEST_START_MONTH + TEST_DURATION - 1}")
     print(performances.to_string())
