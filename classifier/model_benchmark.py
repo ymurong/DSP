@@ -15,19 +15,22 @@ classifiers_dictionary_0 = {
                                            max_features="sqrt",
                                            class_weight="balanced_subsample",
                                            n_jobs=-1),
-    'XGBoost': XGBClassifier(random_state=0, max_depth=2, scale_pos_weight=12.12, eval_metric='mlogloss',
+    'LightGBM': LGBMClassifier(random_state=0, n_estimators=9, max_depth=5, objective='binary', scale_pos_weight=12.12,
+                               n_jobs=-1),
+    'XGBoost': XGBClassifier(random_state=0, n_estimators=6, max_depth=7, sampling_method="uniform", booster="gbtree",
+                             scale_pos_weight=12.12, eval_metric='mlogloss',
                              use_label_encoder=False, n_jobs=-1),
-    'XGBoostRF': XGBRFClassifier(random_state=0, max_depth=5, scale_pos_weight=12.12,
-                                 eval_metric='mlogloss',
-                                 use_label_encoder=False, n_jobs=-1),
-    'CatBoost': CatBoostClassifier(random_state=0, silent=True),
-    'LightGBM': LGBMClassifier(random_state=0, objective='binary', max_depth=3, scale_pos_weight=12.12, n_jobs=-1)
+    'XGBoostRF': XGBRFClassifier(random_state=0, n_estimators=60, max_depth=5, sampling_method="uniform",
+                                 booster="dart", scale_pos_weight=12.12,
+                                 eval_metric='mlogloss', use_label_encoder=False, n_jobs=-1),
+    # 'CatBoost': CatBoostClassifier(random_state=0, n_estimators=2, max_depth=6, bootstrap_type="Bernoulli",
+    #                                grow_policy="SymmetricTree", silent=True),
 }
 
 classifiers_dictionary = {
     **classifiers_dictionary_0,
     'VotingClassifier': VotingClassifier(estimators=list(classifiers_dictionary_0.items()),
-                                         voting='soft', weights=[12, 1, 1, 6, 1],
+                                         voting='soft', weights=[6, 3, 1, 1],
                                          flatten_transform=True, n_jobs=-1)
 }
 
@@ -55,8 +58,8 @@ def extract_train_test(final_feature_path="../feature-engineering/final_features
     df_features["tx_datetime"] = pd.to_datetime(df_features["tx_datetime"])
     df_train, df_test = get_train_test_set(
         df_features,
-        start_date_training=datetime.datetime(2021, 7, 1),
-        delta_train=(datetime.datetime(2021, 10, 31) - datetime.datetime(2021, 7,
+        start_date_training=datetime.datetime(2021, 8, 1),
+        delta_train=(datetime.datetime(2021, 10, 31) - datetime.datetime(2021, 8,
                                                                          1)).days,
         delta_delay=(datetime.datetime(2021, 11, 30) - datetime.datetime(2021, 11,
                                                                          1)).days,
@@ -99,9 +102,16 @@ def dump_models(fitted_models_and_predictions_dictionary):
             pickle.dump(model_and_predictions['classifier'], handle)
 
 
+def adyen_results(final_feature_path="../feature-engineering/final_features.csv"):
+    df_features = pd.read_csv(final_feature_path)
+    adyen_results = pd.crosstab(df_features["has_fraudulent_dispute"], df_features["is_refused_by_adyen"])
+    print(adyen_results)
+
+
 if __name__ == '__main__':
     threshold = 0.5
     DUMP = True
+    adyen_results()
     df_train, df_test = extract_train_test()
     fitted_models_and_predictions_dictionary = fit_predict(df_train, df_test, input_features)
     performances = assessment(fitted_models_and_predictions_dictionary, df_test, threshold=threshold)
