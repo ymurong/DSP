@@ -62,10 +62,12 @@ export class DashboardComponent implements OnInit {
   public acceptedTransaction = false;
   public rejectedTransaction = false;
   public pspIReference!: number;
+  public filterMerchant: string = "all"
 
-  public available_pages: number[] = [1,2,3,4,5];
   public current_page: number = 1;
   public last_page: number = 0;
+
+  public allMerchants: string[] = ["Merchant A", "Merchant B", "Merchant C", "Merchant D", "Merchant E"];
 
   ngOnInit(): void {
     this.initCharts();
@@ -114,7 +116,8 @@ export class DashboardComponent implements OnInit {
   //}
 
   applyFilters(): void {
-    this.transactionsService.getTransactionsFiltered(this.pspIReference, this.acceptedTransaction, this.rejectedTransaction, this.current_page).subscribe(
+    alert(this.filterMerchant);
+    this.transactionsService.getTransactionsFiltered(this.pspIReference, this.acceptedTransaction, this.rejectedTransaction, this.current_page, this.filterMerchant).subscribe(
       (transactionList: any) => {
         this.transactions = [];
         this.initializeTransactions(transactionList["items"])

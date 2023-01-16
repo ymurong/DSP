@@ -21,7 +21,7 @@ export class TransactionsService {
     return this.http.get<Response>(this.transactionsUrl, {headers: this.headers, params: this.params});
   }
 
-  public getTransactionsFiltered(reference: number, accepted: boolean, rejected: boolean, current_page: number) {
+  public getTransactionsFiltered(reference: number, accepted: boolean, rejected: boolean, current_page: number, merchant: string) {
     this.params = new HttpParams().set("size", 8).set("page", current_page);
     if (accepted != rejected){
       if (accepted){
@@ -32,6 +32,9 @@ export class TransactionsService {
     }
     if (reference != null){
       this.params = this.params.set("psp_reference", reference.toString());
+    }
+    if (merchant != "all"){
+      this.params = this.params.set("merchant", merchant);
     }
     return this.http.get(this.transactionsUrl, {headers: this.headers, params: this.params}); 
     
