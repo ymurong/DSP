@@ -1,7 +1,6 @@
 from sklearn.ensemble import RandomForestClassifier, VotingClassifier
 from xgboost import XGBClassifier, XGBRFClassifier
 from lightgbm import LGBMClassifier
-from catboost import CatBoostClassifier
 from lib.model_selection import fit_model_and_get_predictions, get_train_test_set
 import datetime
 import pandas as pd
@@ -9,16 +8,15 @@ from calendar import monthrange
 from lib.mutation_util import daysOfMonth
 
 classifiers_dictionary_0 = {
-    # 'RandomForest': RandomForestClassifier(random_state=0, n_estimators=95, max_depth=9, criterion="log_loss",
-    #                                        max_features="sqrt",
-    #                                        class_weight="balanced_subsample",
-    #                                        n_jobs=-1),
-    'XGBoost': XGBClassifier(random_state=0, max_depth=2, scale_pos_weight=12.12, eval_metric='mlogloss',
-                             use_label_encoder=False, n_jobs=-1),
+    'RandomForest': RandomForestClassifier(random_state=0, n_estimators=95, max_depth=9, criterion="log_loss",
+                                           max_features="sqrt",
+                                           class_weight="balanced_subsample",
+                                           n_jobs=-1),
+    # 'XGBoost': XGBClassifier(random_state=0, max_depth=2, scale_pos_weight=12.12, eval_metric='mlogloss',
+    #                          use_label_encoder=False, n_jobs=-1),
     # 'XGBoostRF': XGBRFClassifier(random_state=0, max_depth=5, scale_pos_weight=12.12,
     #                              eval_metric='mlogloss',
     #                              use_label_encoder=False, n_jobs=-1),
-    # 'CatBoost': CatBoostClassifier(random_state=0, silent=True),
     # 'LightGBM': LGBMClassifier(random_state=0, objective='binary', max_depth=3, scale_pos_weight=12.12, n_jobs=-1)
 }
 
@@ -100,7 +98,7 @@ def fit_predict(df_train, df_test, input_features, output_feature="has_fraudulen
 
 if __name__ == '__main__':
 
-    classifier = "XGBoost"
+    classifier = "RandomForest"
     df_pred_prob_all = pd.DataFrame(columns=['psp_reference', 'predict_proba', 'created_at', 'updated_at'])
     for df_train, df_test in train_test_monthly_generator(test_start_month=7, test_end_month=12, year=2021):
         fitted_models_and_predictions_dictionary = fit_predict(df_train, df_test, input_features)

@@ -71,3 +71,11 @@ Run the following command to test.
 ```bash
 pytest
 ```
+
+
+# How to generate dump files
+#### 1. prediction_dump.csv
+we use the [prediction_generator.py](../classifier/prediction_generator.py) to generate prediction probability based on given model (for now, random forest is used as it is the best based on our experiments)
+
+#### 2. transactions_dump.csv
+we use the [transactions_dump.ipynb](./transactions_dump.ipynb) to generate all the historic transactions given by adyen.
