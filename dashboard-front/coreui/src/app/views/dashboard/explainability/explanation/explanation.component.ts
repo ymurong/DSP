@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Chart } from 'chart.js';
 
 @Component({
@@ -6,10 +6,13 @@ import { Chart } from 'chart.js';
   templateUrl: './explanation.component.html',
   styleUrls: ['./explanation.component.scss']
 })
-export class ExplanationComponent{
+export class ExplanationComponent implements OnInit{
+
+  @Input() psp_reference: bigint = BigInt(0);
+  @Input() risk_score: number = 0;
 
   chartRadarData = {
-    labels: ['IP Risk Score', 'EMail Risk Score', 'Amount Risk Score', 'XXXXX', 'YYYYY'],
+    labels: ['Circumstancial Evidences Score', 'IP Score', 'Card Behaviour Score', 'Amount Spent Score', 'E-Mail Score'],
     datasets: [
       {
         label: 'Risk Score',
@@ -36,10 +39,14 @@ export class ExplanationComponent{
             angleLines: {
                 display: false
             },
-            suggestedMin: 0,
+            suggestedMin: -2,
             suggestedMax: 1
         }
     }
     }
+  }
+
+  ngOnInit(): void {
+    console.log(this.psp_reference);
   }
 }

@@ -2,6 +2,9 @@
     <div class="column">
         <div class="col-lg-6">
             <c-chart type="radar" [data]="chartRadarData"></c-chart>
+            <div style="text-align: center;">
+                <b>Transaction Risk Score:</b> {{ risk_score | number:'1.4-4' }}
+            </div>
         </div>
     </div>
     <div class="col-md-5 ms-auto inline" style="margin-top: -43%; margin-right: 3%;">
