@@ -46,6 +46,7 @@ sqlite3 transactions.sqlite3
 ```
 
 In the sqlite3 interactive shell, type the following commands to import the csv file called dump.csv.
+> IMPORTANT: For windows, don't include the --skip 1 option but for Mac the --skip 1 option is compulsory
 ```bash
 .mode csv transactions
 .separator ","
@@ -70,3 +71,11 @@ Run the following command to test.
 ```bash
 pytest
 ```
+
+
+# How to generate dump files
+#### 1. prediction_dump.csv
+we use the [prediction_generator.py](../classifier/prediction_generator.py) to generate prediction probability based on given model (for now, random forest is used as it is the best based on our experiments)
+
+#### 2. transactions_dump.csv
+we use the [transactions_dump.ipynb](./transactions_dump.ipynb) to generate all the historic transactions given by adyen.

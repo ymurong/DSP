@@ -17,7 +17,7 @@ class ReadPrediction(CreatePrediction):
 
 class CreateTransaction(BaseModel):
     merchant: str
-    card_schema: str
+    card_scheme: str
     is_credit: bool
     eur_amount: float
     ip_country: str

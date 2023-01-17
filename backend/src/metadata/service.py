@@ -1,3 +1,4 @@
+from src.common.RFClassifierPipeline import RFClassifierPipeline
 from src.common.XGBClassifierPipeline import XGBClassifierPipeline
 from src.common.BasePipeline import BasePipeline
 import pandas as pd
@@ -5,32 +6,25 @@ from sqlalchemy.orm import Session
 from src.transactions import models
 from sqlalchemy import func
 from src.metadata.exception import classifier_not_found_exception
-
-TEST_DATA_PATH = "src/resources/test_dataset_december.csv"
-XGBOOST_MODEL_PATH = "../resources/pretrained_models/xgboost_classifier_model.pkl"
-FEATURES = ['ip_node_degree', 'card_node_degree', 'email_node_degree', 'is_credit',
-            'ip_address_woe', 'email_address_woe', 'card_number_woe', 'no_ip',
-            'no_email', 'same_country', 'merchant_Merchant B',
-            'merchant_Merchant C', 'merchant_Merchant D', 'merchant_Merchant E',
-            'card_scheme_MasterCard', 'card_scheme_Other', 'card_scheme_Visa',
-            'device_type_Linux', 'device_type_MacOS', 'device_type_Other',
-            'device_type_Windows', 'device_type_iOS', 'shopper_interaction_POS']
+from src.resources.conf import INPUT_FEATURES, OUTPUT_FEATURE, TEST_DATA_PATH, XGBOOST_MODEL_PATH, RF_MODEL_PATH
 
 
 def load_test_data():
     df_test = pd.read_csv(TEST_DATA_PATH)
-    X_test = df_test[FEATURES]
-    y_test = df_test["has_fraudulent_dispute"]
+    X_test = df_test[INPUT_FEATURES]
+    y_test = df_test[OUTPUT_FEATURE]
     return X_test, y_test
 
 
 def classifier_factory(classifier_name: str) -> BasePipeline:
     if classifier_name == "xgboost":
         return XGBClassifierPipeline(model_file_name=XGBOOST_MODEL_PATH)
+    if classifier_name == "random_forest":
+        return RFClassifierPipeline(model_file_name=RF_MODEL_PATH)
     raise classifier_not_found_exception
 
 
-def get_classifier_metrics(classifier_name: str = "xgboost", threshold: float = 0.5):
+def get_classifier_metrics(classifier_name: str, threshold: float = 0.5):
     X_test, y_test = load_test_data()
     pipeline = classifier_factory(classifier_name)
     metrics = pipeline.eval(X_test, y_test, threshold=threshold)

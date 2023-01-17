@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 import logging
 import os
@@ -6,6 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pickle
 from src.common.BasePipeline import BasePipeline
+from src.resources.conf import INPUT_FEATURES, OUTPUT_FEATURE
 import datetime
 
 logging.getLogger(__name__)
@@ -28,13 +28,15 @@ class XGBClassifierPipeline(BasePipeline):
     def load_pipeline(self, **kwargs) -> None:
         dir = os.path.dirname(os.path.abspath(__file__))
         fname = os.path.join(dir, self.model_file_name)
-        pickled_model = pickle.load(open(fname, 'rb'))
-        self.pipeline = pickled_model
+        with open(fname, 'rb') as handle:
+            pickled_model = pickle.load(handle)
+            self.pipeline = pickled_model
 
     def save_pipeline(self) -> None:
         dir = os.path.dirname(os.path.abspath(__file__))
         fname = os.path.join(dir, self.model_file_name)
-        pickle.dump(self.pipeline, open(fname, "wb"))
+        with open(fname, 'wb') as handle:
+            pickle.dump(self.pipeline, handle)
 
     def eval(self, X_test: pd.DataFrame, y_test: pd.DataFrame, threshold: float = 0.5):
         predicted = self.predict(X_test=X_test.copy(), threshold=threshold)
@@ -59,18 +61,11 @@ class XGBClassifierPipeline(BasePipeline):
 if __name__ == '__main__':
     # load test data
     df_test = pd.read_csv("../resources/test_dataset_december.csv")
-    columns = ['ip_node_degree', 'card_node_degree', 'email_node_degree', 'is_credit',
-               'ip_address_woe', 'email_address_woe', 'card_number_woe', 'no_ip',
-               'no_email', 'same_country', 'merchant_Merchant B',
-               'merchant_Merchant C', 'merchant_Merchant D', 'merchant_Merchant E',
-               'card_scheme_MasterCard', 'card_scheme_Other', 'card_scheme_Visa',
-               'device_type_Linux', 'device_type_MacOS', 'device_type_Other',
-               'device_type_Windows', 'device_type_iOS', 'shopper_interaction_POS']
-    X_test = df_test[columns]
-    y_test = df_test["has_fraudulent_dispute"]
+    X_test = df_test[INPUT_FEATURES]
+    y_test = df_test[OUTPUT_FEATURE]
 
     # evaluate
-    pipeline = XGBClassifierPipeline(model_file_name="../resources/pretrained_models/xgboost_classifier_model.pkl")
+    pipeline = XGBClassifierPipeline(model_file_name="../resources/pretrained_models/XGBoost.pickle")
     metrics = pipeline.eval(X_test, y_test)
     print(metrics)
 
@@ -82,4 +77,4 @@ if __name__ == '__main__':
     df_pred_prob = pd.concat([df_test["psp_reference"], y_predict_proba], axis=1)
     df_pred_prob["created_at"] = pd.Series([datetime.datetime.now()] * df_pred_prob.shape[0])
     df_pred_prob["updated_at"] = pd.Series([datetime.datetime.now()] * df_pred_prob.shape[0])
-    df_pred_prob.to_csv("../../predictions_dump.csv", index=False)
+    df_pred_prob.to_csv("../../predictions_dump_december.csv", index=False)

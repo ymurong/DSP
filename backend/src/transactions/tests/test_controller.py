@@ -64,7 +64,7 @@ def test_create_transaction(test_db):
     """
     response = client.post("/transactions", json={
         "merchant": "string",
-        "card_schema": "string",
+        "card_scheme": "string",
         "is_credit": True,
         "eur_amount": 0,
         "ip_country": "string",
@@ -92,7 +92,7 @@ def test_get_transactions(test_db):
     """
     client.post("/transactions", json={
         "merchant": "fake",
-        "card_schema": "fake",
+        "card_scheme": "fake",
         "is_credit": True,
         "eur_amount": 0,
         "ip_country": "fake",
