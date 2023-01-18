@@ -1,214 +1,64 @@
-<app-widgets-dropdown></app-widgets-dropdown>
-<c-row>
-  <c-col xs>
-    <c-card class="mb-4">
-      <c-card-header>
-        <b>Fraud Classifier </b>
-        <span cTooltip="Change the decision boundary to see how the different metrics that depict the historical transactions would react">
-          <svg class="text-info" cIcon name="cilInfo"></svg>
-        </span>
-      </c-card-header>
-      <c-card-body>
-        <label cLabel for="sensitivity">Decision Boundary - <strong>{{classification_sensitivity}}</strong></label>
-        <input [(ngModel)]="classification_sensitivity"
-              cFormControl
-              id=""
-              max="1"
-              min="0"
-              step="0.01"
-              type="range" />
-      </c-card-body>
-      <c-card-footer>
-        <c-row class="text-center" [md]="4" [xs]="2">
-          <c-col class="mb-sm-2 mb-0">
-            <div class="text-medium-emphasis">F1 Score
-              <span cTooltip="F1 score measures a model's overall accuracy">
-                <svg class="text-info" cIcon name="cilInfo"></svg>
-              </span>
-            </div>
-            <strong>81%</strong>
-          </c-col>
-          <c-col class="mb-sm-2 mb-0">
-            <div class="text-medium-emphasis">Precision 
-              <span cTooltip="Precision measures the percentage of transactions predicted as fraud that were correctly classified">
-                <svg class="text-info" cIcon name="cilInfo"></svg>
-              </span>
-            </div>
-            <strong>71%</strong>
-          </c-col>
-          <c-col class="mb-sm-2 mb-0">
-            <div class="text-medium-emphasis">Recall 
-              <span cTooltip="Recall measures the percentage of real fraud transactions that were correctly identified">
-                <svg class="text-info" cIcon name="cilInfo"></svg>
-              </span>
-            </div>
-            <strong>96%</strong>
-          </c-col>
-          <c-col class="mb-sm-2 mb-0">
-            <div style="display: flex; align-items: center; margin-top: 7px;">
-            <button type="button" class="btn btn-outline-success"><strong>Change Boundary</strong></button></div>
-          </c-col>
-        </c-row>
-      </c-card-footer>
-    </c-card>
-  </c-col>
-</c-row>
-
-
-
-<c-row>
-  <c-col xs>
-    <c-card class="mb-4">
-      <c-card-header>
-        <b>Transactions</b>
-      </c-card-header>
-      <c-card-header>
-        <div style="float:left; margin-right: 5px; vertical-align: middle;">
-          <b >Filters</b>
-        </div>
-        <div style="float:right; margin-right: 5px; vertical-align: middle;">
-          <div class="row g-4">
-            <div class="col-md" style="margin-top: 33px;">
-              <div class="input-group mb-3">
-                <input type="number" class="form-control" placeholder="Search Reference" name="reference" [(ngModel)]="pspIReference">
-              </div>
-            </div>
-            <div class="col-md">
-              <div class="form-floating">
-                <select class="form-select" id="floatingSelectGrid" [(ngModel)]="filterMerchant">
-                  <option selected value="all">All Merchants</option>
-                  <option *ngFor="let merchant of allMerchants" value="{{ merchant }}">{{ merchant }}</option>
-                </select>
-              </div>
-            </div>
-            <div class="col-md">
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="inlineCheckbox1" name="accepted" [(ngModel)]="acceptedTransaction">
-                <label class="form-check-label" for="inlineCheckbox1">Accepted Transactions</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="inlineCheckbox2" name="rejected" [(ngModel)]="rejectedTransaction">
-                <label class="form-check-label" for="inlineCheckbox2">Rejected Transactions</label>
-              </div>
-            </div>
-            <div class="col-md" style="margin-top: 33px;">
-              <button type="button" class="btn btn-outline-dark" (click)="applyFilters()">Apply Filters</button>
-            </div>
-          </div>
-        </div>
-        <!-- ***********************************************************************************************
-      <div style="float:right; margin-right: 5px; vertical-align: middle;">
-        <form id="statusForm" (submit)="applyFilters()">
-          <div class="form-floating form-floating">
-            <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-              <option selected>Open this select menu</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
-            </select>
-            <label for="floatingSelect">Works with selects</label>
-          </div>
-          <span style="margin-right: 20px;">
-            <input type="number" id="Reference" placeholder="Search Reference:" name="reference" [(ngModel)]="pspIReference"/>
+<div *ngIf = "dataLoaded | async">
+  <app-widgets-dropdown [originalMetrics]="original_metrics_widget" [currentMetrics]="current_metrics_widget"></app-widgets-dropdown>
+  <c-row>
+    <c-col xs>
+      <c-card class="mb-4">
+        <c-card-header>
+          <b>Fraud Classifier </b>
+          <span cTooltip="Change the decision boundary to see how the different metrics that depict the historical transactions would react">
+            <svg class="text-info" cIcon name="cilInfo"></svg>
           </span>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="inlineCheckbox1" name="accepted" [(ngModel)]="acceptedTransaction">
-            <label class="form-check-label" for="inlineCheckbox1">Accepted Transactions</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="inlineCheckbox2" name="rejected" [(ngModel)]="rejectedTransaction">
-            <label class="form-check-label" for="inlineCheckbox2">Rejected Transactions</label>
-          </div>
-          <button type="button" class="btn btn-outline-dark" (click)="applyFilters()">Apply Filters</button>
-        </form>
-      </div> 
-      ***********************************************************************************************************************************
-      -->
-      </c-card-header>
-      <c-card-body>
-        <table
-          [hover]="true"
-          [responsive]="true"
-          [striped]="true"
-          align="middle"
-          cTable
-          class="mb-0 border"
-        >
-          <thead cTableColor="light">
-          <tr>
-            <th>Reference</th>
-            <th class="text-center">IP</th>
-            <th>Amount</th>
-            <th>Status</th>
-            <th>Risk Score</th>
-            <th>Action</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr *ngFor="let transaction of transactions; index as i">
-            <td>
-              <div>{{ transaction.psp_reference }}</div>
-              <div class="small text-medium-emphasis">
-                <span>{{ transaction.merchant }}</span> | Executed:
-                {{ transaction.created_at_string }}
+        </c-card-header>
+        <c-card-body>
+          <label cLabel for="sensitivity">Decision Boundary - <strong>{{current_threshold}}</strong></label>
+          <input [(ngModel)]="current_threshold" id="slider" (change)="updateMetrics()"
+                cFormControl
+                id=""
+                max="1"
+                min="0"
+                step="0.01"
+                type="range" />
+        </c-card-body>
+        <c-card-footer>
+          <c-row class="text-center" [md]="4" [xs]="2">
+            <c-col class="mb-sm-2 mb-0">
+              <div class="text-medium-emphasis">F1 Score
+                <span cTooltip="F1 score measures a model's overall accuracy">
+                  <svg class="text-info" cIcon name="cilInfo"></svg>
+                </span>
               </div>
-            </td>
-            <td class="text-center">
-              {{ transaction.ip_country }}
-              <!--
-              <svg cIcon
-                id="{{ transaction.ip_address + transaction.ip_country }}"
-                name="cif{{ transaction.ip_country }}"
-                size="xl"
-                title="{{ transaction.ip_country }}"
-              ></svg> -->
-            </td>
-            <td>
-              {{ transaction.eur_amount | number:'1.2-2' }}€
-            </td>
-            <td>
-              <strong>{{ transaction.status_verbose }}</strong>
-            </td>
-            <td>
-              {{ transaction.prediction.predict_proba | number:'1.4-4' }}
-            </td>
-            <td>
-              <button cButton color="primary" data-bs-toggle="modal" attr.data-bs-target="#modalExplain{{i}}">
-                explain
-              </button>
-            </td>
-            <div class="modal fade" id="modalExplain{{i}}" aria-hidden="true">
-              <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Why it has been {{transaction.status_verbose}}?</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    <app-explanation [psp_reference]="transaction.psp_reference" [risk_score]="transaction.prediction.predict_proba"></app-explanation>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary">Report transaction</button>
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                  </div>
-                </div>
+              <strong>{{ model_rates.f1 * 100 | number:'2.2-2' }}%</strong>
+            </c-col>
+            <c-col class="mb-sm-2 mb-0">
+              <div class="text-medium-emphasis">Precision 
+                <span cTooltip="Precision measures the percentage of transactions predicted as fraud that were correctly classified">
+                  <svg class="text-info" cIcon name="cilInfo"></svg>
+                </span>
               </div>
-            </div>
-          </tr>
-          </tbody>
-        </table>
-      </c-card-body>
-      <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
-          <li class="page-item"><a class="page-link" (click)="goToPage(1)">{{ 1 }} (First)</a></li>
-          <li class="page-item"><a class="page-link" (click)="moveToPage(-1)">Previous</a></li>
-          <li class="page-item active"><a class="page-link">{{ current_page }}</a></li>
-          <li class="page-item"><a class="page-link" (click)="moveToPage(1)">{{ current_page + 1 }}</a></li>
-          <li class="page-item"><a class="page-link" (click)="moveToPage(2)">{{ current_page + 2 }}</a></li>
-          <li class="page-item"><a class="page-link" (click)="moveToPage(1)">Next</a></li>
-          <li class="page-item"><a class="page-link" (click)="goToPage(-1)">{{ last_page }} (Last)</a></li>
-        </ul>
-      </nav>
-    </c-card>
-  </c-col>
-</c-row>
+              <strong>{{ model_rates.precision * 100 | number:'2.2-2' }}%</strong>
+            </c-col>
+            <c-col class="mb-sm-2 mb-0">
+              <div class="text-medium-emphasis">Recall 
+                <span cTooltip="Recall measures the percentage of real fraud transactions that were correctly identified">
+                  <svg class="text-info" cIcon name="cilInfo"></svg>
+                </span>
+              </div>
+              <strong>{{ model_rates.recall * 100 | number:'2.2-2' }}%</strong>
+            </c-col>
+            <c-col class="mb-sm-2 mb-0">
+              <div style="display: flex; align-items: center; margin-top: 7px;">
+              <button type="button" class="btn btn-outline-success"><strong>Change Boundary</strong></button></div>
+            </c-col>
+          </c-row>
+        </c-card-footer>
+      </c-card>
+    </c-col>
+  </c-row>
+</div>
+
+<div *ngIf = "loading | async">
+  <div class="fade show" style="text-align: center; padding-top: calc(75vh / 2);"> <!--height: 100vh">-->
+    <i class="spinner-grow spinner-grow-sm"></i>
+    <span class="m-1">Loading...</span>
+  </div>
+</div>

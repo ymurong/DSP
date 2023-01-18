@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Transaction } from './transaction';
+import { environment } from 'src/environments/environment';
 
 
 @Injectable({
@@ -12,7 +13,7 @@ export class TransactionsService {
   constructor(
     private http: HttpClient) { }
 
-  transactionsUrl = "http://127.0.0.1:8000/transactions"
+  transactionsUrl = `${environment.API}/transactions`
   headers = new HttpHeaders();
   params = new HttpParams().set("size", 8)
   

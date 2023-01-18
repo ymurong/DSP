@@ -6,9 +6,9 @@
       title="Fraud rate"
     >
       <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
-        5%
-        <span class="fs-6 fw-normal">
-          (-12.4% <svg cIcon name="cilArrowBottom"></svg>)
+        {{ currentMetrics.fraud_rate * 100 | number:'1.2-2' }}%
+        <span class="fs-6 fw-normal" *ngIf="variations.fraud_rate.exist">
+          ({{ variations.fraud_rate.percentage * 100 | number:'1.2-2'}}% <svg cIcon name="{{variations.fraud_rate.arrow}}"></svg>)
         </span>
       </ng-template>
       <ng-template cTemplateId="widgetActionTemplate">
@@ -41,9 +41,11 @@
       color="success"
     >
       <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
-        <span>5%</span>
-        <span class="fs-6 fw-normal">
-          (40.9% <svg cIcon name="cilArrowTop"></svg>)
+        <span>
+          {{ currentMetrics.block_rate * 100 | number:'1.2-2' }}%
+        </span>
+        <span class="fs-6 fw-normal" *ngIf="variations.block_rate.exist">
+          ({{ variations.block_rate.percentage * 100 | number:'1.2-2'}}% <svg cIcon name="{{variations.block_rate.arrow}}"></svg>)
         </span>
       </ng-template>
       <ng-template cTemplateId="widgetActionTemplate">
@@ -71,9 +73,11 @@
       color="primary"
     >
       <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
-        <span>22K</span>
-        <span class="fs-6 fw-normal">
-          (84.7% <svg cIcon name="cilArrowTop"></svg>)
+        <span>
+          {{ currentMetrics.total_revenue | number:'1.0-0'}}€
+        </span>
+        <span class="fs-6 fw-normal" *ngIf="variations.total_revenue.exist">
+          ({{ variations.total_revenue.percentage * 100 | number:'1.2-2'}}% <svg cIcon name="{{variations.total_revenue.arrow}}"></svg>)
         </span>
       </ng-template>
       <ng-template cTemplateId="widgetActionTemplate">
@@ -101,9 +105,11 @@
       color="warning"
     >
       <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
-        <span>3K</span>
-        <span class="fs-6 fw-normal">
-          (-23.6% <svg cIcon name="cilArrowBottom"></svg>)
+        <span>
+          {{ currentMetrics.chargeback_costs | number:'1.0-0'}}€
+        </span>
+        <span class="fs-6 fw-normal" *ngIf="variations.chargeback_costs.exist">
+          ({{ variations.chargeback_costs.percentage * 100 | number:'1.2-2'}}% <svg cIcon name="{{variations.chargeback_costs.arrow}}"></svg>)
         </span>
       </ng-template>
       <ng-template cTemplateId="widgetActionTemplate">

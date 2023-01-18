@@ -24,6 +24,7 @@ import { WidgetsModule } from '../widgets/widgets.module';
 import { ExplanationComponent } from './explainability/explanation/explanation.component';
 import { DetailedChartsComponent } from './detailed-charts/detailed-charts.component';
 import { HttpClientModule } from '@angular/common/http';
+import { HistoricalTransactionsComponent } from './historical-transactions/historical-transactions.component';
 
 @NgModule({
   imports: [
@@ -50,7 +51,7 @@ import { HttpClientModule } from '@angular/common/http';
     NgxChartsModule,
     HttpClientModule
   ],
-  declarations: [DashboardComponent, ExplanationComponent, DetailedChartsComponent]
+  declarations: [DashboardComponent, ExplanationComponent, DetailedChartsComponent, HistoricalTransactionsComponent]
 })
 export class DashboardModule {
 }

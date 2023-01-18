@@ -2,14 +2,19 @@ import { INavData } from '@coreui/angular';
 
 export const navItems: INavData[] = [
   {
-    name: 'Risk Dashboard',
+    name: 'Risk Simulator',
     url: '/dashboard',
     iconComponent: { name: 'cil-speedometer' }
   },
   {
     name: 'Analytics',
-    url: '/dashboard/charts',
+    url: '/charts',
     iconComponent: {name: 'cil-chart'}
+  },
+  {
+    name: 'Historical Transactions',
+    url: '/transactions',
+    iconComponent: {name: 'cil-list'}
   },
   {
     title: true,
