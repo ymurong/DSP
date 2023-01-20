@@ -84,14 +84,6 @@ export class DetailedChartsComponent implements OnInit{
   }
 
   createChart(): void {
-    for (let i = 0; i < 12; i++) {
-      this.transactionsService.getMonthlyTransactions(1, 2021).subscribe(
-        (transactionList: any) => {
-          console.log(transactionList);
-        }
-      )
-    }
-    alert("Hola");
   }
 
 }

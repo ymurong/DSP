@@ -22,10 +22,3 @@ class ExplainabilityScore(BaseModel):
     risk_card_behaviour: float
     risk_card_amount: float
     general_evidences: float
-
-class MonthMetrics(BaseModel):
-    month: str
-    block_rate: float
-    fraud_rate: float
-    total_revenue: float
-    chargeback_costs: float
