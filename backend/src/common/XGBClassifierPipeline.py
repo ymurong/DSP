@@ -43,6 +43,9 @@ class XGBClassifierPipeline(BasePipeline):
         self.metrics_sklearn(y_true=y_test, y_pred=predicted)
         return self.metrics
 
+    def explain(self):
+        raise NotImplementedError
+
     def plot_confusion_matrix(self, h=15, w=15):
         assert self.metrics is not None, "You must evaluate the model with test data before plotting the results"
         fig, ax = plt.subplots(figsize=(h, w))  # Sample figsize in inches

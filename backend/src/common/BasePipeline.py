@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
 import logging
+import numpy as np
 import os
 from sklearn.metrics import confusion_matrix, accuracy_score, roc_auc_score, f1_score, roc_curve, recall_score, \
     precision_score
@@ -22,6 +23,10 @@ class BasePipeline(metaclass=ABCMeta):
 
     @abstractmethod
     def load_pipeline(self):
+        pass
+
+    @abstractmethod
+    def explain(self, transaction_sample: np.ndarray):
         pass
 
     def _check_dir(self, directory):
