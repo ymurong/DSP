@@ -15,7 +15,7 @@ export const navItems: INavData[] = [
     name: 'Historical Transactions',
     url: '/transactions',
     iconComponent: {name: 'cil-list'}
-  },
+  },/*
   {
     title: true,
     name: 'Theme'
@@ -246,5 +246,5 @@ export const navItems: INavData[] = [
         url: '/500'
       }
     ]
-  },
+  },*/
 ];

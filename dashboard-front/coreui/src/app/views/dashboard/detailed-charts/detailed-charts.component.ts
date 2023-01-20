@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Chart, ChartConfiguration, ChartItem, registerables} from 'node_modules/chart.js'
+import { MetricsService } from '../metrics.service';
 Chart.register(...registerables);
-import { TransactionsService } from '../transactions.service';
 
 
 @Component({
@@ -11,7 +11,16 @@ import { TransactionsService } from '../transactions.service';
 })
 export class DetailedChartsComponent implements OnInit{
 
-  constructor(private transactionsService: TransactionsService) {}
+  constructor(private metricsService: MetricsService) {}
+
+  public threshold: number = 0.5;
+  public dataLoaded: Promise<boolean> = Promise.resolve(false);
+  public loading: Promise<boolean> = Promise.resolve(true);
+
+  public data_block_rate: number[] = [];
+  public data_fraud_rate: number[] = [];
+  public data_revenue: number[] = [];
+  public data_chargeback: number[] = [];
 
   chartLineData = {
     labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
@@ -23,7 +32,7 @@ export class DetailedChartsComponent implements OnInit{
         borderColor: 'rgba(9, 232, 98, 1)',
         pointBackgroundColor: 'rgba(9, 232, 98, 1)',
         pointBorderColor: '#fff',
-        data: [0.055, 0.055, 0.054, 0.052, 0.041, 0.051, 0.065, 0.069, 0.066, 0.065, 0.069, 0.062],
+        data: this.data_block_rate,
         stack: 'true',
         type: 'line'
       },
@@ -34,7 +43,7 @@ export class DetailedChartsComponent implements OnInit{
         borderColor: 'rgba(255, 28, 17, 1)',
         pointBackgroundColor: 'rgba(255, 28, 17, 1)',
         pointBorderColor: '#fff',
-        data: [0.060, 0.059, 0.050, 0.055, 0.045, 0.051, 0.055, 0.057, 0.057, 0.055, 0.056, 0.053],
+        data: this.data_fraud_rate,
         stack: 'true',
         type: 'line'
       },
@@ -45,7 +54,7 @@ export class DetailedChartsComponent implements OnInit{
         borderColor: 'rgba(9, 99, 233, 1)',
         pointBackgroundColor: 'rgba(9, 99, 233, 1)',
         pointBorderColor: '#fff',
-        data: [20000, 22000, 23000, 18000, 20000, 22000, 21000, 20000, 23000, 22000, 21000, 24000],
+        data: this.data_revenue,
         stack: 'true',
         type: 'bar'
       },
@@ -57,7 +66,7 @@ export class DetailedChartsComponent implements OnInit{
         borderColor: 'rgba(255, 171, 0, 1)',
         pointBackgroundColor: 'rgba(255, 171, 0, 1)',
         pointBorderColor: '#fff',
-        data: [1600, 1650, 1700, 1750, 1600, 1650, 1300, 1250, 1250, 1300, 1350, 1400],
+        data: this.data_chargeback,
         stack: 'true',
         type: 'bar'
       }
@@ -78,12 +87,93 @@ export class DetailedChartsComponent implements OnInit{
     }
   };  
 
-
   ngOnInit(): void {
     this.createChart()
   }
 
   createChart(): void {
+    this.metricsService.getMonthMetrics(this.threshold).subscribe(
+      (monthlyAnalytics: any) => {
+        this.fillData(monthlyAnalytics);
+        this.initializeChart();
+        this.dataLoaded = Promise.resolve(true);
+        this.loading = Promise.resolve(false);
+      }
+    )
+    console.log(this.data_block_rate);
   }
+
+  fillData(monthlyAnalytics: any[]): void {
+    this.data_block_rate = []; this.data_fraud_rate = []; this.data_revenue = []; this.data_chargeback = [];
+    for (let monthDict of monthlyAnalytics){
+      this.data_block_rate.push(this.if0Nan(monthDict["block_rate"]));
+      this.data_fraud_rate.push(this.if0Nan(monthDict["fraud_rate"]));
+      this.data_revenue.push(this.if0Nan(monthDict["total_revenue"]));
+      this.data_chargeback.push(this.if0Nan(monthDict["chargeback_costs"]));
+    }
+    console.log(this.data_revenue);
+  }
+
+  if0Nan(num: number): number{
+    if (num == 0) {
+      return NaN;
+    } else {
+      return num;
+    }
+  }
+
+  initializeChart() {
+    this.chartLineData = {
+      labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+      datasets: [
+        {
+          label: 'Block Rate (%)',
+          yAxisID: 'A',
+          backgroundColor: 'rgba(9, 232, 98, 0.2)',
+          borderColor: 'rgba(9, 232, 98, 1)',
+          pointBackgroundColor: 'rgba(9, 232, 98, 1)',
+          pointBorderColor: '#fff',
+          data: this.data_block_rate,
+          stack: 'true',
+          type: 'line'
+        },
+        {
+          label: 'Fraud Rate (%)',
+          yAxisID: 'A',
+          backgroundColor: 'rgba(255, 28, 17, 0.2)',
+          borderColor: 'rgba(255, 28, 17, 1)',
+          pointBackgroundColor: 'rgba(255, 28, 17, 1)',
+          pointBorderColor: '#fff',
+          data: this.data_fraud_rate,
+          stack: 'true',
+          type: 'line'
+        },
+        {
+          label: 'Total Revenue',
+          yAxisID: 'B',
+          backgroundColor: 'rgba(9, 99, 233, 0.5)',
+          borderColor: 'rgba(9, 99, 233, 1)',
+          pointBackgroundColor: 'rgba(9, 99, 233, 1)',
+          pointBorderColor: '#fff',
+          data: this.data_revenue,
+          stack: 'true',
+          type: 'bar'
+        },
+        {
+          label: 'Chargeback costs',
+          
+          yAxisID: 'B',
+          backgroundColor: 'rgba(255, 171, 0, 0.5)',
+          borderColor: 'rgba(255, 171, 0, 1)',
+          pointBackgroundColor: 'rgba(255, 171, 0, 1)',
+          pointBorderColor: '#fff',
+          data: this.data_chargeback,
+          stack: 'true',
+          type: 'bar'
+        }
+      ]
+    };
+  }
+
 
 }

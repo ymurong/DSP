@@ -100,8 +100,14 @@ def get_store_metrics(db: Session, threshold: float):
         store_metrics.append(metrics)
     return store_metrics
 
+def get_month_metrics(db: Session, threshold: float):
+    response = []
+    for month in range(1, 12 + 1):
+        response.append(get_metrics_by_month(db, threshold, month))
+    return response
 
-def get_month_metrics(db: Session, threshold: float, month: int):
+
+def get_metrics_by_month(db: Session, threshold: float, month: int):
     
     month_from, month_to, year_from, year_to = get_month_ranges(month=month, year=2021)
      
@@ -144,7 +150,7 @@ def get_month_metrics(db: Session, threshold: float, month: int):
     total_revenue = total_revenue[0][0] if total_revenue[0][0] != None else 0
 
     dict_month_analytics = {
-        "month": "all",
+        "month": str(month),
         "block_rate": block_transactions[0][0]/total_transactions[0][0],
         "fraud_rate": fraud_transactions[0][0]/total_transactions[0][0],
         "total_revenue": total_revenue,

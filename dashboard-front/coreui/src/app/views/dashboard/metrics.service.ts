@@ -14,6 +14,7 @@ export class MetricsService {
   ) { }
   
   metadataMetrics = `${environment.API}/metadata/classifier/metrics/random_forest`
+  metadataMonthly = `${environment.API}/metadata/classifier/metrics/monthly/random_forest`
   metadataCosts = `${environment.API}/metadata/store/metrics`
   headers = new HttpHeaders();
   
@@ -25,5 +26,10 @@ export class MetricsService {
   getStoreCosts(threshold: number): Observable<Response[]> {
     let params = new HttpParams().set("threshold", threshold);
     return this.http.get<Response[]>(this.metadataCosts, {headers: this.headers, params: params})
+  }
+
+  getMonthMetrics(threshold: number): Observable<Response[]> {
+    let params = new HttpParams().set("threshold", threshold);
+    return this.http.get<Response[]>(this.metadataMonthly, {headers: this.headers, params: params})
   }
 }

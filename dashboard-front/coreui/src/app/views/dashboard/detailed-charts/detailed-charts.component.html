@@ -1,9 +1,18 @@
 
-<c-col xs="10" lg="15">
-    <c-card style="justify-content: center;">
-        <c-card-body>
-        <c-chart [data]="chartLineData"></c-chart>
-        </c-card-body>
-    </c-card>
-</c-col>
+<div *ngIf = "dataLoaded | async">
+    <c-col xs="10" lg="15">
+        <c-card style="justify-content: center;">
+            <c-card-body>
+            <c-chart [data]="chartLineData"></c-chart>
+            </c-card-body>
+        </c-card>
+    </c-col>
+</div>
+<div *ngIf = "loading | async">
+    <div class="fade show" style="text-align: center; padding-top: calc(75vh / 2);"> <!--height: 100vh">-->
+          <i class="spinner-grow spinner-grow-sm"></i>
+      <span class="m-1">Loading...</span>
+    </div>
+</div>
+
 
