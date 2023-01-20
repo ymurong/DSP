@@ -1,4 +1,7 @@
 <div *ngIf = "dataLoaded | async">
+  <div class="alert alert-warning" style="text-align: center;" role="alert" *ngIf="over3percent">
+    <strong>With this configuration, CHARGEBACK COSTS exceed 3% of the TOTAL REVENUE. Lower the decision boundary.</strong>
+  </div>
   <app-widgets-dropdown [originalMetrics]="original_metrics_widget" [currentMetrics]="current_metrics_widget"></app-widgets-dropdown>
   <c-row>
     <c-col xs>
@@ -47,7 +50,9 @@
             </c-col>
             <c-col class="mb-sm-2 mb-0">
               <div style="display: flex; align-items: center; margin-top: 7px;">
-              <button type="button" class="btn btn-outline-success"><strong>Change Boundary</strong></button></div>
+                <a *ngIf="!over3percent" role="button" class="btn btn-success">Change Boundary</a>
+                <a *ngIf="over3percent" role="button" class="btn btn-success disabled" aria-disabled="true">Change Boundary</a>
+              </div>
             </c-col>
           </c-row>
         </c-card-footer>

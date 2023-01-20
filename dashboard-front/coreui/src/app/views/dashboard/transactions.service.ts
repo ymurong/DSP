@@ -40,4 +40,19 @@ export class TransactionsService {
     return this.http.get(this.transactionsUrl, {headers: this.headers, params: this.params}); 
     
   }
+
+  public getMonthlyTransactions(month: number, year: number): Observable<Response> {
+    let month_to = month + 1
+    let year_to = year
+    if (month_to > 12) {
+      month_to = 1;
+      year_to = year + 1;
+    }
+    
+    const date_from = year.toString() + "-" + month.toString().padStart(2, '0') + "-01T00:00:00";
+    const date_to = year_to.toString() + "-" + month_to.toString().padStart(2, '0') + "-01T00:00:00";
+
+    const allElementsParams = new HttpParams().set("created_at_from", date_from).set("created_at_from", date_to);
+    return this.http.get<Response>(this.transactionsUrl, {headers: this.headers, params: allElementsParams});
+  }
 }

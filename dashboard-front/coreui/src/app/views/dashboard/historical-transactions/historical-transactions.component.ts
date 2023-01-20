@@ -56,6 +56,9 @@ export class HistoricalTransactionsComponent implements OnInit {
 
   public allMerchants: string[] = ["Merchant A", "Merchant B", "Merchant C", "Merchant D", "Merchant E"];
 
+  public dataLoaded: Promise<boolean> = Promise.resolve(false);
+  public loading: Promise<boolean> = Promise.resolve(true);
+
 
   ngOnInit(): void {
     this.initTransactionList();
@@ -69,6 +72,8 @@ export class HistoricalTransactionsComponent implements OnInit {
         this.numTransactions = transactionList["total"]
         this.sizePage = transactionList["size"]
         this.last_page = Math.floor(this.numTransactions/this.sizePage) + 1
+        this.dataLoaded = Promise.resolve(true);
+        this.loading = Promise.resolve(false);
       }
     );
     console.log(this.transactions);

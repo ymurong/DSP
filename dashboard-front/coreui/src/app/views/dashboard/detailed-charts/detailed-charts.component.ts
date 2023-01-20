@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Chart, ChartConfiguration, ChartItem, registerables} from 'node_modules/chart.js'
 Chart.register(...registerables);
+import { TransactionsService } from '../transactions.service';
 
 
 @Component({
@@ -9,6 +10,8 @@ Chart.register(...registerables);
   styleUrls: ['./detailed-charts.component.scss']
 })
 export class DetailedChartsComponent implements OnInit{
+
+  constructor(private transactionsService: TransactionsService) {}
 
   chartLineData = {
     labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
@@ -81,6 +84,14 @@ export class DetailedChartsComponent implements OnInit{
   }
 
   createChart(): void {
+    for (let i = 0; i < 12; i++) {
+      this.transactionsService.getMonthlyTransactions(1, 2021).subscribe(
+        (transactionList: any) => {
+          console.log(transactionList);
+        }
+      )
+    }
+    alert("Hola");
   }
 
 }

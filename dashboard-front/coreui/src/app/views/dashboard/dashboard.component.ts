@@ -52,6 +52,9 @@ export class DashboardComponent implements OnInit {
   public loading: Promise<boolean> = Promise.resolve(true);
   public firstTime = true;
 
+  public limitChargebackRario: number = 0.03;
+  public over3percent = false;
+
   ngOnInit(): void {
     this.initCharts();
     this.updateMetrics();
@@ -76,6 +79,7 @@ export class DashboardComponent implements OnInit {
         console.log(rates)
         this.aggregateDataStores(rates);
         this.createMetricWidget();
+        this.checkInconsistencies();
         if (this.firstTime){
           this.createOriginalMetricWidget();
           this.dataLoaded = Promise.resolve(true);
@@ -116,7 +120,16 @@ export class DashboardComponent implements OnInit {
       total_revenue: this.model_costs.total_revenue,
       chargeback_costs: this.model_costs.chargeback_costs
     };
-  }  
+  }
+
+  checkInconsistencies() {
+    if (this.current_metrics_widget.chargeback_costs/this.current_metrics_widget.total_revenue > this.limitChargebackRario){
+      this.over3percent = true
+    } else {
+      this.over3percent = false
+    }
+
+  }
 
   initCharts(): void {
     this.mainChart = this.chartsData.mainChart;
