@@ -7,6 +7,7 @@ import { Page500Component } from './views/pages/page500/page500.component';
 import { LoginComponent } from './views/pages/login/login.component';
 import { RegisterComponent } from './views/pages/register/register.component';
 import { DetailedChartsComponent } from './views/dashboard/detailed-charts/detailed-charts.component';
+import { HistoricalTransactionsComponent } from './views/dashboard/historical-transactions/historical-transactions.component'; 
 
 const routes: Routes = [
   {
@@ -27,8 +28,14 @@ const routes: Routes = [
           import('./views/dashboard/dashboard.module').then((m) => m.DashboardModule)
       },
       {
-        path: 'dashboard/charts',
+        path: 'charts',
         component: DetailedChartsComponent,
+        loadChildren: () =>
+          import('./views/dashboard/dashboard.module').then((m) => m.DashboardModule)
+      },
+      {
+        path: 'transactions',
+        component: HistoricalTransactionsComponent,
         loadChildren: () =>
           import('./views/dashboard/dashboard.module').then((m) => m.DashboardModule)
       },
