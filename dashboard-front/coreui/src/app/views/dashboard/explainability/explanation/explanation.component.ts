@@ -26,7 +26,7 @@ export class ExplanationComponent implements OnInit{
         pointHoverBackgroundColor: '#fff',
         pointHoverBorderColor: 'rgba(179,181,198,1)',
         tooltipLabelColor: 'rgba(179,181,198,1)',
-        data: [.85, .15, .90, .40, .40]
+        data: [0,0,0,0,0]
       }
     ]
   };
