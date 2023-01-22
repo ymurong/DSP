@@ -40,7 +40,7 @@ export class TransactionsService {
     return this.http.get(this.transactionsUrl, {headers: this.headers, params: this.params}); 
     
   }
-
+/*
   public getMonthlyTransactions(month: number, year: number): Observable<Response> {
     let month_to = month + 1
     let year_to = year
@@ -54,5 +54,11 @@ export class TransactionsService {
 
     const allElementsParams = new HttpParams().set("created_at_from", date_from).set("created_at_from", date_to);
     return this.http.get<Response>(this.transactionsUrl, {headers: this.headers, params: allElementsParams});
+  }*/
+
+  getExplainabilityScore(reference: number): Observable<Response> {
+    let params = new HttpParams().set("explainer_name", "random_forest_lime");
+    let explainabilityURI = `${environment.API}/transactions/${reference}/explainability_score`
+    return this.http.get<Response>(explainabilityURI, {headers: this.headers, params: params})
   }
 }

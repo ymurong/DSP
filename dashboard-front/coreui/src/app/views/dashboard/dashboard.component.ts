@@ -76,7 +76,6 @@ export class DashboardComponent implements OnInit {
   updateRevenue(): void {
     this.metricsService.getStoreCosts(this.current_threshold).subscribe(
       (rates: any) => {
-        console.log(rates)
         this.aggregateDataStores(rates);
         this.createMetricWidget();
         this.checkInconsistencies();

@@ -101,7 +101,6 @@ export class HistoricalTransactionsComponent implements OnInit {
 
   
   applyFilters(): void {
-    alert(this.filterMerchant);
     this.transactionsService.getTransactionsFiltered(this.pspIReference, this.acceptedTransaction, this.rejectedTransaction, this.current_page, this.filterMerchant).subscribe(
       (transactionList: any) => {
         this.transactions = [];
@@ -111,7 +110,6 @@ export class HistoricalTransactionsComponent implements OnInit {
         this.last_page = Math.floor(this.numTransactions/this.sizePage) + 1;
       }
     );
-    //alert([this.acceptedTransaction, this.rejectedTransaction, this.pspIReference]);
   }
 
   goToPage(page_number: number): void {

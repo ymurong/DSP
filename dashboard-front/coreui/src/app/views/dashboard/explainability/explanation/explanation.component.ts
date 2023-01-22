@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Chart } from 'chart.js';
+import { TransactionsService } from '../../transactions.service';
 
 @Component({
   selector: 'app-explanation',
@@ -7,12 +8,14 @@ import { Chart } from 'chart.js';
   styleUrls: ['./explanation.component.scss']
 })
 export class ExplanationComponent implements OnInit{
+  constructor(
+    private explanationService: TransactionsService){}
 
   @Input() psp_reference: bigint = BigInt(0);
   @Input() risk_score: number = 0;
 
   chartRadarData = {
-    labels: ['Circumstancial Evidences Score', 'IP Score', 'Card Behaviour Score', 'Amount Spent Score', 'E-Mail Score'],
+    labels: ['General Evidences Score', 'IP Score', 'Card Behaviour Score', 'Amount Spent Score', 'E-Mail Score'],
     datasets: [
       {
         label: 'Risk Score',
@@ -28,25 +31,39 @@ export class ExplanationComponent implements OnInit{
     ]
   };
 
-  chartRadarOptions = {
-    responsive : true,
-    plugins : {
-      legend: {
-        display: false
-      },
-      scales: {
+  chartOptions = {
+    elements: {
+      line: {
+        borderWidth: 3
+      }
+    },
+    scales: {
         r: {
             angleLines: {
                 display: false
             },
-            suggestedMin: -2,
+            suggestedMin: 0,
             suggestedMax: 1
         }
     }
-    }
-  }
+  };
 
   ngOnInit(): void {
-    console.log(this.psp_reference);
+    this.createRadarChart()
   }
+
+  createRadarChart(): void {
+    this.explanationService.getExplainabilityScore(Number(this.psp_reference)).subscribe(
+      (explanationScores: any) => {
+        this.fillExplanationScores(explanationScores)
+      }
+    )
+  }
+
+  fillExplanationScores(explanationScores: any) {
+    const data = [explanationScores["general_evidences"], explanationScores["ip_risk"], explanationScores["risk_card_behaviour"], explanationScores["risk_card_amount"], explanationScores["email_risk"]]
+    this.chartRadarData.datasets[0].data = data;
+  }
+
+
 }
