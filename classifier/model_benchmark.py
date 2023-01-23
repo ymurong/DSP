@@ -107,12 +107,12 @@ def assessment(fitted_models_and_predictions_dictionary, df_test, threshold=0.5)
 
 def plot_feature_importances(fitted_models_and_predictions_dictionary, nlargest=15, figsize=(20, 10), fontsize=10,
                              export=True, show=False):
+    generate_feature_importances_csv(fitted_models_and_predictions_dictionary)
     for classifier_name, model_and_predictions in fitted_models_and_predictions_dictionary.items():
         if classifier_name != "VotingClassifier":
             plot_feature_importance(model_and_predictions['classifier'], input_features, nlargest=nlargest,
                                     figsize=figsize,
                                     fontsize=fontsize, export=export, show=show)
-
 
 def dump_models(fitted_models_and_predictions_dictionary):
     for classifier_name, model_and_predictions in fitted_models_and_predictions_dictionary.items():
@@ -145,6 +145,19 @@ def cross_validation(test_start_month_marker, test_end_month_marker, report_path
         os.remove(report_path)
     for test_start_month in range(test_start_month_marker, test_end_month_marker + 1):
         evaluate(test_start_month, only_print=False)
+
+
+def generate_feature_importances_csv(fitted_models_and_predictions_dictionary):
+    feature_importance_all = []
+    for classifier_name, model_and_predictions in fitted_models_and_predictions_dictionary.items():
+        if classifier_name != "VotingClassifier":
+            feat_importance_one = pd.DataFrame([model_and_predictions['classifier'].feature_importances_], columns=input_features)
+            feat_importance_one.index = [classifier_name]
+            feature_importance_all.append(feat_importance_one)
+    df_feature_importances = pd.concat(feature_importance_all, axis=0)
+    print(">>>>>>>> Feature Importances")
+    print(df_feature_importances.to_string())
+    df_feature_importances.to_csv("./feature_importance/feature_importance.csv", index=True)
 
 
 def report(text, report_path="cross_val_score.txt", only_print=True):
