@@ -35,10 +35,9 @@ def get_store_metrics(
     store_metrics = service.get_store_metrics(db, threshold)
     return store_metrics
 
-@metadata_app.get("/classifier/metrics/monthly/{classifier_name}", response_model=List[schemas.MonthMetrics],
+@metadata_app.get("/classifier/metrics/monthly", response_model=List[schemas.MonthMetrics],
                   description="Provide analytic metrics per month")
 def get_month_metrics(
-        classifier_name: ClassifierEnum,
         db: Session = Depends(get_db),
         threshold: float = Query(0.5, ge=0, le=1),
 ):
