@@ -1,9 +1,5 @@
 import pandas as pd
 import logging
-import os
-import matplotlib.pyplot as plt
-import seaborn as sns
-import pickle
 from src.common.BasePipeline import BasePipeline
 from src.resources.conf import INPUT_FEATURES, OUTPUT_FEATURE
 import datetime
@@ -21,44 +17,8 @@ class XGBClassifierPipeline(BasePipeline):
             self.load_pipeline()
         self.model_params = model_params
 
-    def predict(self, X_test: pd.DataFrame, threshold: float = 0.5) -> pd.DataFrame:
-        y_predict = (self.pipeline.predict_proba(X_test.copy())[:, 1] >= threshold).astype(bool)
-        return y_predict
-
-    def load_pipeline(self, **kwargs) -> None:
-        dir = os.path.dirname(os.path.abspath(__file__))
-        fname = os.path.join(dir, self.model_file_name)
-        with open(fname, 'rb') as handle:
-            pickled_model = pickle.load(handle)
-            self.pipeline = pickled_model
-
-    def save_pipeline(self) -> None:
-        dir = os.path.dirname(os.path.abspath(__file__))
-        fname = os.path.join(dir, self.model_file_name)
-        with open(fname, 'wb') as handle:
-            pickle.dump(self.pipeline, handle)
-
-    def eval(self, X_test: pd.DataFrame, y_test: pd.DataFrame, threshold: float = 0.5):
-        predicted = self.predict(X_test=X_test.copy(), threshold=threshold)
-        self.metrics_sklearn(y_true=y_test, y_pred=predicted)
-        return self.metrics
-
     def explain(self):
         raise NotImplementedError
-
-    def plot_confusion_matrix(self, h=15, w=15):
-        assert self.metrics is not None, "You must evaluate the model with test data before plotting the results"
-        fig, ax = plt.subplots(figsize=(h, w))  # Sample figsize in inches
-        sns.set(font_scale=4)
-        sns.heatmap(self.metrics["confusion_matrix"], annot=True, linewidths=.5, fmt='g', ax=ax)
-        plt.show()
-
-    def predict_proba(self, X_test: pd.DataFrame):
-        """
-        :param X_test:
-        :return: probability of being positive
-        """
-        return self.pipeline.predict_proba(X_test.copy())[:, 1]
 
 
 if __name__ == '__main__':

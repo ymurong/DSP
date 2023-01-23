@@ -34,9 +34,9 @@ EXPLAINABLE_CATEGORIES = {
 }
 
 OUTPUT_FEATURE = "has_fraudulent_dispute"
+SENSITIVE_FEATURE = "issuing_country"
 
-TEST_DATA_PATH = "src/resources/test_dataset_december.csv"
-
+TEST_DATA_PATH = "../resources/test_dataset_december.csv"
 XGBOOST_MODEL_PATH = "../resources/pretrained_models/XGBoost.pickle"
 RF_MODEL_PATH = "../resources/pretrained_models/RandomForest.pickle"
 RF_EXPLAINER_PATH = "../resources/pretrained_models/RandomForest_LIME.pickle"

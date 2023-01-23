@@ -2,13 +2,14 @@ from src.common.RFClassifierPipeline import RFClassifierPipeline
 from src.common.XGBClassifierPipeline import XGBClassifierPipeline
 from src.common.BasePipeline import BasePipeline
 import pandas as pd
+import os
 from sqlalchemy.orm import Session
 from src.transactions import models
 from sqlalchemy import func
 from src.metadata.exception import classifier_not_found_exception, explainer_not_found_exception, \
     transaction_not_found_exception
 from src.resources.conf import INPUT_FEATURES, OUTPUT_FEATURE, TEST_DATA_PATH, XGBOOST_MODEL_PATH, RF_MODEL_PATH, \
-    RF_EXPLAINER_PATH
+    RF_EXPLAINER_PATH, SENSITIVE_FEATURE
 
 import logging
 
@@ -16,7 +17,9 @@ logger = logging.getLogger("transactions_api")
 
 
 def load_test_data_by_psp_ref(psp_reference: int):
-    df_test = pd.read_csv(TEST_DATA_PATH)
+    dir = os.path.dirname(os.path.abspath(__file__))
+    fname = os.path.join(dir, TEST_DATA_PATH)
+    df_test = pd.read_csv(fname)
     df_test = df_test[df_test["psp_reference"] == psp_reference]
     if df_test.shape[0] == 0:
         logger.error(f"transaction {psp_reference} not found in local testing data")
@@ -26,10 +29,15 @@ def load_test_data_by_psp_ref(psp_reference: int):
     return X_test, y_test
 
 
-def load_test_data():
-    df_test = pd.read_csv(TEST_DATA_PATH)
+def load_test_data(sensitive_features_included=False):
+    dir = os.path.dirname(os.path.abspath(__file__))
+    fname = os.path.join(dir, TEST_DATA_PATH)
+    df_test = pd.read_csv(fname)
     X_test = df_test[INPUT_FEATURES]
     y_test = df_test[OUTPUT_FEATURE]
+    if sensitive_features_included:
+        A_test = df_test[SENSITIVE_FEATURE]
+        return X_test, y_test, A_test
     return X_test, y_test
 
 
@@ -57,14 +65,18 @@ def get_explainability_scores(psp_reference: int, explainer_name: str) -> dict:
     return explanability_scores
 
 
-def get_classifier_metrics(classifier_name: str, threshold: float = 0.5):
-    X_test, y_test = load_test_data()
+def get_classifier_metrics(classifier_name: str, threshold: float = 0.5) -> dict:
+    X_test, y_test, A_test = load_test_data(sensitive_features_included=True)
     pipeline = classifier_factory(classifier_name)
     metrics = pipeline.eval(X_test, y_test, threshold=threshold)
-    return metrics
+    fairness_metrics = pipeline.eval_fairness(X_test, y_test, A_test, threshold=threshold)
+    return {
+        **metrics,
+        "fairness": {**fairness_metrics}
+    }
 
 
-def get_store_metrics(db: Session, threshold: float):
+def get_store_metrics(db: Session, threshold: float) -> dict:
     """
     chargeback_costs: value of transaction + 15 standard fee
     total_revenue: total amount of approved volume processed by the merchant minus the chargeback costs
@@ -100,6 +112,7 @@ def get_store_metrics(db: Session, threshold: float):
         store_metrics.append(metrics)
     return store_metrics
 
+
 def get_month_metrics(db: Session, threshold: float):
     response = []
     for month in range(1, 12 + 1):
@@ -108,56 +121,60 @@ def get_month_metrics(db: Session, threshold: float):
 
 
 def get_metrics_by_month(db: Session, threshold: float, month: int):
-    
     month_from, month_to, year_from, year_to = get_month_ranges(month=month, year=2021)
-     
+
     total_transactions = db.query(
         func.count(models.Transactions.psp_reference)
-    ).\
-        filter(models.Transactions.created_at.between(str(year_from)+"-"+str(month_from)+"-01", str(year_to)+"-"+str(month_to)+"-01")).all()
+    ). \
+        filter(models.Transactions.created_at.between(str(year_from) + "-" + str(month_from) + "-01",
+                                                      str(year_to) + "-" + str(month_to) + "-01")).all()
 
     fraud_transactions = db.query(
         func.count(models.Transactions.psp_reference)
-    ).\
+    ). \
         join(models.Predictions). \
-        filter(models.Transactions.created_at.between(str(year_from)+"-"+str(month_from)+"-01", str(year_to)+"-"+str(month_to)+"-01")). \
+        filter(models.Transactions.created_at.between(str(year_from) + "-" + str(month_from) + "-01",
+                                                      str(year_to) + "-" + str(month_to) + "-01")). \
         filter(models.Transactions.has_fraudulent_dispute == True). \
         filter(models.Predictions.predict_proba < threshold).all()
 
     block_transactions = db.query(
         func.count(models.Transactions.psp_reference)
-    ).\
+    ). \
         join(models.Predictions). \
-        filter(models.Transactions.created_at.between(str(year_from)+"-"+str(month_from)+"-01", str(year_to)+"-"+str(month_to)+"-01")). \
+        filter(models.Transactions.created_at.between(str(year_from) + "-" + str(month_from) + "-01",
+                                                      str(year_to) + "-" + str(month_to) + "-01")). \
         filter(models.Predictions.predict_proba > threshold).all()
 
     total_revenue = db.query(
         func.sum(models.Transactions.eur_amount),
     ). \
         join(models.Predictions). \
-        filter(models.Transactions.created_at.between(str(year_from)+"-"+str(month_from)+"-01", str(year_to)+"-"+str(month_to)+"-01")). \
+        filter(models.Transactions.created_at.between(str(year_from) + "-" + str(month_from) + "-01",
+                                                      str(year_to) + "-" + str(month_to) + "-01")). \
         filter(models.Predictions.predict_proba < threshold).all()
-    
+
     chargeback_costs = db.query(
         func.count(models.Transactions.psp_reference) * 15 + func.sum(models.Transactions.eur_amount),
     ). \
         join(models.Predictions). \
-        filter(models.Transactions.created_at.between(str(year_from)+"-"+str(month_from)+"-01", str(year_to)+"-"+str(month_to)+"-01")). \
+        filter(models.Transactions.created_at.between(str(year_from) + "-" + str(month_from) + "-01",
+                                                      str(year_to) + "-" + str(month_to) + "-01")). \
         filter(models.Transactions.has_fraudulent_dispute == True). \
         filter(models.Predictions.predict_proba < threshold).all()
-    
+
     chargeback_costs = chargeback_costs[0][0] if chargeback_costs[0][0] != None else 0
     total_revenue = total_revenue[0][0] if total_revenue[0][0] != None else 0
 
     dict_month_analytics = {
         "month": str(month),
-        "block_rate": block_transactions[0][0]/total_transactions[0][0],
-        "fraud_rate": fraud_transactions[0][0]/total_transactions[0][0],
+        "block_rate": block_transactions[0][0] / total_transactions[0][0],
+        "fraud_rate": fraud_transactions[0][0] / total_transactions[0][0],
         "total_revenue": total_revenue,
         "chargeback_costs": chargeback_costs,
     }
-    print(dict_month_analytics)
     return dict_month_analytics
+
 
 def get_month_ranges(month: int, year: int):
     month_from = month
@@ -167,5 +184,5 @@ def get_month_ranges(month: int, year: int):
     if month_to > 12:
         month_to = 1
         year_to = year + 1
-    
-    return "{:02d}".format(month_from), "{:02d}".format(month_to), str(year_from), str(year_to) 
+
+    return "{:02d}".format(month_from), "{:02d}".format(month_to), str(year_from), str(year_to)

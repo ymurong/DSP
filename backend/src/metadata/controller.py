@@ -16,6 +16,16 @@ def get_db():
         db.close()
 
 
+@metadata_app.get("/classifier/metrics/monthly", response_model=List[schemas.MonthMetrics],
+                  description="Provide analytic metrics per month")
+def get_month_metrics(
+        db: Session = Depends(get_db),
+        threshold: float = Query(0.5, ge=0, le=1),
+):
+    month_metrics = service.get_month_metrics(db, threshold)
+    return month_metrics
+
+
 @metadata_app.get("/classifier/metrics/{classifier_name}", response_model=schemas.ClassifierMetrics,
                   description="Provide chosen pretrained classifier metrics such as f1, precision, recall, auc, block_rate, fraud_rate")
 def get_classifier_metrics(
@@ -34,13 +44,3 @@ def get_store_metrics(
 ):
     store_metrics = service.get_store_metrics(db, threshold)
     return store_metrics
-
-@metadata_app.get("/classifier/metrics/monthly/{classifier_name}", response_model=List[schemas.MonthMetrics],
-                  description="Provide analytic metrics per month")
-def get_month_metrics(
-        classifier_name: ClassifierEnum,
-        db: Session = Depends(get_db),
-        threshold: float = Query(0.5, ge=0, le=1),
-):
-   month_metrics = service.get_month_metrics(db, threshold)
-   return month_metrics
