@@ -97,7 +97,6 @@ export class ExplanationComponent implements OnInit{
           explanation = "The number of transactions made with this IP during the last N days it's been higher than usual"
         }
       }
-      
     }
   }
 
