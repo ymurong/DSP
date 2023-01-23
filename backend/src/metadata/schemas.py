@@ -1,4 +1,11 @@
 from pydantic import BaseModel
+from typing import Dict, Optional
+
+
+class FairnessMetrics(BaseModel):
+    balanced_accuracy: Dict[str, float]
+    false_positive_rate: Dict[str, float]
+    false_negative_rate: Dict[str, float]
 
 
 class ClassifierMetrics(BaseModel):
@@ -8,6 +15,7 @@ class ClassifierMetrics(BaseModel):
     auc: float
     block_rate: float
     fraud_rate: float
+    fairness: Optional[FairnessMetrics]
 
 
 class StoreMetrics(BaseModel):
@@ -22,6 +30,7 @@ class ExplainabilityScore(BaseModel):
     risk_card_behaviour: float
     risk_card_amount: float
     general_evidences: float
+
 
 class MonthMetrics(BaseModel):
     month: str

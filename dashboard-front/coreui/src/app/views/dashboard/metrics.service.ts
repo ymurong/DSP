@@ -14,7 +14,7 @@ export class MetricsService {
   ) { }
   
   metadataMetrics = `${environment.API}/metadata/classifier/metrics/random_forest`
-  metadataMonthly = `${environment.API}/metadata/classifier/metrics/monthly/random_forest`
+  metadataMonthly = `${environment.API}/metadata/classifier/metrics/monthly`
   metadataCosts = `${environment.API}/metadata/store/metrics`
   headers = new HttpHeaders();
   
