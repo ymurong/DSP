@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MetricsService } from './metrics.service'
 import { DashboardChartsData, IChartProps } from './dashboard-charts-data';
+import { Chart } from 'chart.js';
 
 
 interface ModelRates {
@@ -11,6 +12,13 @@ interface ModelRates {
   auc: number;
   block_rate: number;
   fraud_rate:number;
+  fairness: FairnessMatrics;
+}
+
+interface FairnessMatrics {
+  balanced_accuracy: JSON;
+  false_positive_rate: JSON;
+  false_negative_rate: JSON;
 }
 
 interface ModelCosts{
@@ -32,8 +40,6 @@ interface Metrics {
   styleUrls: ['dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  constructor(private chartsData: DashboardChartsData, private metricsService: MetricsService) {
-  }
 
   public mainChart: IChartProps = {};
   public chart: Array<IChartProps> = [];
@@ -55,9 +61,42 @@ export class DashboardComponent implements OnInit {
   public limitChargebackRario: number = 0.03;
   public over3percent = false;
 
+  public charts: any;
+  public data_balanced_accuracy = {
+    labels: [""],
+    datasets: [
+      {
+        label: 'Balanced Accuracy',
+        backgroundColor: '#f87979',
+        data: [0]
+      }
+    ]
+  };
+
+  public values_fn_rate: number[] = [];
+  public data_fn_rate = {
+    labels: [""],
+    datasets: [
+      {
+        label: 'False Negative Rate',
+        backgroundColor: '#66ccff',
+        data: [0]
+      }
+    ]
+  };
+
+  constructor(private chartsData: DashboardChartsData, private metricsService: MetricsService, private cdr: ChangeDetectorRef) {
+  }
+
+
   ngOnInit(): void {
     this.initCharts();
     this.updateMetrics();
+  }
+
+  ngAfterViewInit() {
+    this.charts = (<any>document.getElementById('fn_rate'))._chart;
+    this.charts
   }
 
   updateMetrics(): void {
@@ -69,8 +108,16 @@ export class DashboardComponent implements OnInit {
     this.metricsService.getAccuracyMetrics(this.current_threshold).subscribe(
       (rates: any) => {
         this.model_rates = rates as ModelRates;
+        this.updateFairnessMetrics(this.model_rates.fairness);
       }
     )
+  }
+
+  updateFairnessMetrics(fairness: FairnessMatrics): void {
+    this.data_balanced_accuracy.labels = Object.keys(fairness.balanced_accuracy);
+    this.data_balanced_accuracy.datasets[0].data = Object.values(fairness.balanced_accuracy);
+    this.data_fn_rate.labels = Object.keys(fairness.false_negative_rate);
+    this.data_fn_rate.datasets[0].data = Object.values(fairness.false_negative_rate);
   }
 
   updateRevenue(): void {
@@ -81,8 +128,8 @@ export class DashboardComponent implements OnInit {
         this.checkInconsistencies();
         if (this.firstTime){
           this.createOriginalMetricWidget();
-          this.dataLoaded = Promise.resolve(true);
           this.loading = Promise.resolve(false);
+          this.dataLoaded = Promise.resolve(true);
           this.firstTime = false;
         }
       }
@@ -122,12 +169,11 @@ export class DashboardComponent implements OnInit {
   }
 
   checkInconsistencies() {
-    if (this.current_metrics_widget.chargeback_costs/this.current_metrics_widget.total_revenue > this.limitChargebackRario){
+    if (this.current_metrics_widget.fraud_rate > this.limitChargebackRario){
       this.over3percent = true
     } else {
       this.over3percent = false
     }
-
   }
 
   initCharts(): void {

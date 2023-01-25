@@ -25,6 +25,7 @@ import { ExplanationComponent } from './explainability/explanation/explanation.c
 import { DetailedChartsComponent } from './detailed-charts/detailed-charts.component';
 import { HttpClientModule } from '@angular/common/http';
 import { HistoricalTransactionsComponent } from './historical-transactions/historical-transactions.component';
+import { FairnessComponent } from './fairness/fairness.component';
 
 @NgModule({
   imports: [
@@ -51,7 +52,7 @@ import { HistoricalTransactionsComponent } from './historical-transactions/histo
     NgxChartsModule,
     HttpClientModule
   ],
-  declarations: [DashboardComponent, ExplanationComponent, DetailedChartsComponent, HistoricalTransactionsComponent]
+  declarations: [DashboardComponent, ExplanationComponent, DetailedChartsComponent, HistoricalTransactionsComponent, FairnessComponent]
 })
 export class DashboardModule {
 }

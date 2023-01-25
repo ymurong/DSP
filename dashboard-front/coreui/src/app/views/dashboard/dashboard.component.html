@@ -1,6 +1,6 @@
 <div *ngIf = "dataLoaded | async">
   <div class="alert alert-warning" style="text-align: center;" role="alert" *ngIf="over3percent">
-    <strong>With this configuration, CHARGEBACK COSTS exceed 3% of the TOTAL REVENUE. Lower the decision boundary.</strong>
+    <strong>With this configuration, CHARGEBACK RATE exceed 3%. Lower the decision boundary.</strong>
   </div>
   <app-widgets-dropdown [originalMetrics]="original_metrics_widget" [currentMetrics]="current_metrics_widget"></app-widgets-dropdown>
   <c-row>
@@ -59,6 +59,15 @@
       </c-card>
     </c-col>
   </c-row>
+  <c-card>
+    <c-card-header>
+      <strong>Fairness Metrics </strong>
+      <span cTooltip="Change the decision boundary to see how the different metrics that depict the historical transactions would react">
+        <svg class="text-info" cIcon name="cilInfo"></svg>
+      </span>
+    </c-card-header>
+    <app-fairness [labels]="data_fn_rate.labels" [data_accuracy]="data_balanced_accuracy.datasets[0].data" [data_fn]="data_fn_rate.datasets[0].data"></app-fairness>
+  </c-card>
 </div>
 
 <div *ngIf = "loading | async">
