@@ -14,7 +14,7 @@ export class ExplanationComponent implements OnInit{
   @Input() psp_reference: bigint = BigInt(0);
   @Input() risk_score: number = 0;
 
-  public influential_features: string[] = ["email_address_risk_30day_window", "card_nb_tx_30day_window", "email_address_risk_7day_window", "diff_tx_time_in_hours"];
+  public influential_features: string[] = ["email_address_risk_30day_window", "card_nb_tx_30day_window", "email_address_risk_7day_window", "card_avg_amount_7day_window"];
   public verbose_explanation: string[] = [];
 
   chartRadarData = {
@@ -59,6 +59,7 @@ export class ExplanationComponent implements OnInit{
     this.explanationService.getExplainabilityScore(Number(this.psp_reference)).subscribe(
       (explanationScores: any) => {
         this.fillExplanationScores(explanationScores)
+        this.createReadableExplanation()
       }
     )
   }
@@ -68,36 +69,49 @@ export class ExplanationComponent implements OnInit{
     this.chartRadarData.datasets[0].data = data;
   }
 
-  createSentences(): void {
-    let explanation: string = "";
-    const sentence = this.influential_features[0];
+  createReadableExplanation(){
+    this.verbose_explanation = [];
+    for (let sentence of this.influential_features){
+      this.createOneSentence(sentence);
+    }
+  }
 
+  createOneSentence(sentence: string): void {
+    let explanation: string = "";
     if (this.risk_score > 0.5) {
       const token0 = sentence.split("_")[0]
-      if (token0 == "card"){
-        const type = sentence.split("_")[1]
-        if (type == "avg"){
-          const number_days = "7";
-          explanation = "The amount spent with this CARD during the last N days "
-        }else if (type == "nb"){
-          explanation = "The number of transactions made with this CARD during the last N days it's been higher than usual"
+      const N = sentence.split("_").slice(-2)[0].slice(0, -3).toString();    
+      const window = sentence.split("_").slice(-1).toString()
+      if (window == "window") {
+        if (token0 == "card"){
+          const type = sentence.split("_")[1]
+          if (type == "avg"){
+            explanation = "The amount spent with this CARD during the last " + N + " days.";
+          }else if (type == "nb"){
+            explanation = "The number of transactions made with this CARD during the last "+ N +" days it's been higher than usual.";
+          }
+        } else if (token0 == "email"){
+          const type = sentence.split("_")[2]
+          if (type == "risk"){
+            explanation = "There have been transactions made with this EMAIL during the last "+ N +" days that have been fraudulent.";
+          }else if (type == "nb"){
+            explanation = "The number of transactions made with this EMAIL during the last "+ N +" days it's been higher than usual.";
+          }
+        } else if (token0 == "ip"){
+          const type = sentence.split("_")[2]
+          if (type == "risk"){
+            explanation = "There have been transactions made with this IP during the last "+ N +" days that have been fraudulent.";
+          }else if (type == "nb"){
+            explanation = "The number of transactions made with this IP during the last "+ N +" days it's been higher than usual.";
+          }
         }
-      } else if (token0 == "email"){
-        const type = sentence.split("_")[2]
-        if (type == "risk"){
-          explanation = "There have been previous transactions made with this EMAIL during the last N days that have been fraudulent."
-        }else if (type == "nb"){
-          explanation = "The number of transactions made with this EMAIL during the last N days it's been higher than usual"
-        }
-      } else if (token0 == "ip"){
-        const type = sentence.split("_")[2]
-        if (type == "risk"){
-          explanation = "There have been previous transactions made with this IP during the last N days that have been fraudulent."
-        }else if (type == "nb"){
-          explanation = "The number of transactions made with this IP during the last N days it's been higher than usual"
-        }
+      } else if (sentence == "diff_tx_time_in_hours" || sentence == "is_night" || sentence == "is_weekend"){
+        explanation = "The time in the day this transaction has been made differs from what is usual."
+      } else if (sentence == "same_country"  || sentence == "is_diff_previous_ip_country"){
+        explanation = "This transaction has been made in another country, which is unusual for this user."
       }
     }
+    this.verbose_explanation.push(explanation);
   }
 
 
