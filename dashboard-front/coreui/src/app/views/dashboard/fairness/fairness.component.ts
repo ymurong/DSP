@@ -19,7 +19,7 @@ export class FairnessComponent implements OnInit, OnChanges {
     labels: this.labels,
     datasets: [
       {
-        label: 'False Negative Rate',
+        label: 'False Negative Rate (%)',
         backgroundColor: '#627596',
         data: this.data_fn
       }
