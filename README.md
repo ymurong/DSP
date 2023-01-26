@@ -76,10 +76,16 @@ The backend provides online openapi documentation http://127.0.0.1:8000/docs
 Check the [DASHBOARD_README.md](./dashboard-front/coreui/README.md) for details. 
 
 
+## References
+
+[APATE: A novel approach for automated credit card transaction fraud detection using network-
+based extensions" by Véronique Van Vlasselaer, Cristián Bravo, Olivier Caelen, Tina
+Eliassa-Rad, Leman Akoglu, Monique Snoeck, and Bart Baesens](https://reader.elsevier.com/reader/sd/pii/S0167923615000846?token=E3DFBEAF6A07EFC01346AC1C4E53E845177BDDA1FEC3D7840030E6AF757DF39126AD174F5A946F33EC1616CFED756B6A&originRegion=eu-west-1&originCreation=20230124164812)
 
 
+[A graph-based, semi-supervised, credit card fraud detection system](https://b-lebichot.github.io/publications/A%20graph-based,%20semi-supervised,%20credit%20card%20fraud%20detection%20system%20-%20preprint.pdf)
 
+[Towards automated feature engineering for credit
+card fraud detection using multi-perspective HMMs](https://hal.science/hal-02278223/file/S0167739X19300664.pdf)
 
-
-
-
+[Assessment and mitigation of fairness issues in credit-card default models](https://fairlearn.org/main/auto_examples/plot_credit_loan_decisions.html#sphx-glr-auto-examples-plot-credit-loan-decisions-py)
