@@ -28,7 +28,7 @@
 
 [Prototype Phase Slides Link](https://docs.google.com/presentation/d/1pRIDMuRsB5ZIwAhkmasCoDJcMUB6IIQHSfBdcfv4s7E/edit#slide=id.g192ae5ba20d_2_0)
 
-
+[Pre-Final Phase Slides Link](https://docs.google.com/presentation/d/1wihsksSqfJSjYV3IzQX-mVXwEKKzURQ54BUnT3h4LDI/edit#slide=id.p)
 
 ## Explorative Analysis
 Any missing values, outliers, bias?
