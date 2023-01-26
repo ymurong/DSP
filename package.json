@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@lagoshny/ngx-hateoas-client": "^3.3.8"
+  }
+}

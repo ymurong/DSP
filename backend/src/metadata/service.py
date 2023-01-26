@@ -1,43 +1,82 @@
+from src.common.RFClassifierPipeline import RFClassifierPipeline
 from src.common.XGBClassifierPipeline import XGBClassifierPipeline
 from src.common.BasePipeline import BasePipeline
 import pandas as pd
+import os
 from sqlalchemy.orm import Session
 from src.transactions import models
 from sqlalchemy import func
-from src.metadata.exception import classifier_not_found_exception
+from src.metadata.exception import classifier_not_found_exception, explainer_not_found_exception, \
+    transaction_not_found_exception
+from src.resources.conf import INPUT_FEATURES, OUTPUT_FEATURE, TEST_DATA_PATH, XGBOOST_MODEL_PATH, RF_MODEL_PATH, \
+    RF_EXPLAINER_PATH, SENSITIVE_FEATURE
 
-TEST_DATA_PATH = "src/resources/test_dataset_december.csv"
-XGBOOST_MODEL_PATH = "../resources/pretrained_models/xgboost_classifier_model.pkl"
-FEATURES = ['ip_node_degree', 'card_node_degree', 'email_node_degree', 'is_credit',
-            'ip_address_woe', 'email_address_woe', 'card_number_woe', 'no_ip',
-            'no_email', 'same_country', 'merchant_Merchant B',
-            'merchant_Merchant C', 'merchant_Merchant D', 'merchant_Merchant E',
-            'card_scheme_MasterCard', 'card_scheme_Other', 'card_scheme_Visa',
-            'device_type_Linux', 'device_type_MacOS', 'device_type_Other',
-            'device_type_Windows', 'device_type_iOS', 'shopper_interaction_POS']
+import logging
+
+logger = logging.getLogger("transactions_api")
 
 
-def load_test_data():
-    df_test = pd.read_csv(TEST_DATA_PATH)
-    X_test = df_test[FEATURES]
-    y_test = df_test["has_fraudulent_dispute"]
+def load_test_data_by_psp_ref(psp_reference: int):
+    dir = os.path.dirname(os.path.abspath(__file__))
+    fname = os.path.join(dir, TEST_DATA_PATH)
+    df_test = pd.read_csv(fname)
+    df_test = df_test[df_test["psp_reference"] == psp_reference]
+    if df_test.shape[0] == 0:
+        logger.error(f"transaction {psp_reference} not found in local testing data")
+        raise transaction_not_found_exception
+    X_test = df_test[INPUT_FEATURES]
+    y_test = df_test[OUTPUT_FEATURE]
+    return X_test, y_test
+
+
+def load_test_data(sensitive_features_included=False):
+    dir = os.path.dirname(os.path.abspath(__file__))
+    fname = os.path.join(dir, TEST_DATA_PATH)
+    df_test = pd.read_csv(fname)
+    X_test = df_test[INPUT_FEATURES]
+    y_test = df_test[OUTPUT_FEATURE]
+    if sensitive_features_included:
+        A_test = df_test[SENSITIVE_FEATURE]
+        return X_test, y_test, A_test
     return X_test, y_test
 
 
 def classifier_factory(classifier_name: str) -> BasePipeline:
     if classifier_name == "xgboost":
         return XGBClassifierPipeline(model_file_name=XGBOOST_MODEL_PATH)
+    if classifier_name == "random_forest":
+        return RFClassifierPipeline(model_file_name=RF_MODEL_PATH)
     raise classifier_not_found_exception
 
 
-def get_classifier_metrics(classifier_name: str = "xgboost", threshold: float = 0.5):
-    X_test, y_test = load_test_data()
+def explainer_factory(explainer_name: str) -> BasePipeline:
+    if explainer_name == "random_forest_lime":
+        rf0 = RFClassifierPipeline(model_file_name=RF_MODEL_PATH)
+        rf0.load_explainer(RF_EXPLAINER_PATH)
+        return rf0
+    raise explainer_not_found_exception
+
+
+def get_explainability_scores(psp_reference: int, explainer_name: str) -> dict:
+    X_test, _ = load_test_data_by_psp_ref(psp_reference)
+    transaction_sample = X_test.values[0]
+    pipeline = explainer_factory(explainer_name=explainer_name)
+    explanability_scores = pipeline.explain(transaction_sample)
+    return explanability_scores
+
+
+def get_classifier_metrics(classifier_name: str, threshold: float = 0.5) -> dict:
+    X_test, y_test, A_test = load_test_data(sensitive_features_included=True)
     pipeline = classifier_factory(classifier_name)
     metrics = pipeline.eval(X_test, y_test, threshold=threshold)
-    return metrics
+    fairness_metrics = pipeline.eval_fairness(X_test, y_test, A_test, threshold=threshold)
+    return {
+        **metrics,
+        "fairness": {**fairness_metrics}
+    }
 
 
-def get_store_metrics(db: Session, threshold: float):
+def get_store_metrics(db: Session, threshold: float) -> dict:
     """
     chargeback_costs: value of transaction + 15 standard fee
     total_revenue: total amount of approved volume processed by the merchant minus the chargeback costs
@@ -72,3 +111,78 @@ def get_store_metrics(db: Session, threshold: float):
         }
         store_metrics.append(metrics)
     return store_metrics
+
+
+def get_month_metrics(db: Session, threshold: float):
+    response = []
+    for month in range(1, 12 + 1):
+        response.append(get_metrics_by_month(db, threshold, month))
+    return response
+
+
+def get_metrics_by_month(db: Session, threshold: float, month: int):
+    month_from, month_to, year_from, year_to = get_month_ranges(month=month, year=2021)
+
+    total_transactions = db.query(
+        func.count(models.Transactions.psp_reference)
+    ). \
+        filter(models.Transactions.created_at.between(str(year_from) + "-" + str(month_from) + "-01",
+                                                      str(year_to) + "-" + str(month_to) + "-01")).all()
+
+    fraud_transactions = db.query(
+        func.count(models.Transactions.psp_reference)
+    ). \
+        join(models.Predictions). \
+        filter(models.Transactions.created_at.between(str(year_from) + "-" + str(month_from) + "-01",
+                                                      str(year_to) + "-" + str(month_to) + "-01")). \
+        filter(models.Transactions.has_fraudulent_dispute == True). \
+        filter(models.Predictions.predict_proba < threshold).all()
+
+    block_transactions = db.query(
+        func.count(models.Transactions.psp_reference)
+    ). \
+        join(models.Predictions). \
+        filter(models.Transactions.created_at.between(str(year_from) + "-" + str(month_from) + "-01",
+                                                      str(year_to) + "-" + str(month_to) + "-01")). \
+        filter(models.Predictions.predict_proba > threshold).all()
+
+    total_revenue = db.query(
+        func.sum(models.Transactions.eur_amount),
+    ). \
+        join(models.Predictions). \
+        filter(models.Transactions.created_at.between(str(year_from) + "-" + str(month_from) + "-01",
+                                                      str(year_to) + "-" + str(month_to) + "-01")). \
+        filter(models.Predictions.predict_proba < threshold).all()
+
+    chargeback_costs = db.query(
+        func.count(models.Transactions.psp_reference) * 15 + func.sum(models.Transactions.eur_amount),
+    ). \
+        join(models.Predictions). \
+        filter(models.Transactions.created_at.between(str(year_from) + "-" + str(month_from) + "-01",
+                                                      str(year_to) + "-" + str(month_to) + "-01")). \
+        filter(models.Transactions.has_fraudulent_dispute == True). \
+        filter(models.Predictions.predict_proba < threshold).all()
+
+    chargeback_costs = chargeback_costs[0][0] if chargeback_costs[0][0] != None else 0
+    total_revenue = total_revenue[0][0] if total_revenue[0][0] != None else 0
+
+    dict_month_analytics = {
+        "month": str(month),
+        "block_rate": block_transactions[0][0] / total_transactions[0][0],
+        "fraud_rate": fraud_transactions[0][0] / total_transactions[0][0],
+        "total_revenue": total_revenue,
+        "chargeback_costs": chargeback_costs,
+    }
+    return dict_month_analytics
+
+
+def get_month_ranges(month: int, year: int):
+    month_from = month
+    year_from = year
+    month_to = month + 1
+    year_to = year
+    if month_to > 12:
+        month_to = 1
+        year_to = year + 1
+
+    return "{:02d}".format(month_from), "{:02d}".format(month_to), str(year_from), str(year_to)

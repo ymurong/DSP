@@ -23,6 +23,9 @@ import { DashboardComponent } from './dashboard.component';
 import { WidgetsModule } from '../widgets/widgets.module';
 import { ExplanationComponent } from './explainability/explanation/explanation.component';
 import { DetailedChartsComponent } from './detailed-charts/detailed-charts.component';
+import { HttpClientModule } from '@angular/common/http';
+import { HistoricalTransactionsComponent } from './historical-transactions/historical-transactions.component';
+
 @NgModule({
   imports: [
     DashboardRoutingModule,
@@ -36,6 +39,7 @@ import { DetailedChartsComponent } from './detailed-charts/detailed-charts.compo
     ReactiveFormsModule,
     ButtonModule,
     FormModule,
+    FormsModule,
     ButtonModule,
     ButtonGroupModule,
     ChartjsModule,
@@ -44,9 +48,10 @@ import { DetailedChartsComponent } from './detailed-charts/detailed-charts.compo
     WidgetsModule,
     FormsModule,
     TooltipModule,
-    NgxChartsModule
+    NgxChartsModule,
+    HttpClientModule
   ],
-  declarations: [DashboardComponent, ExplanationComponent, DetailedChartsComponent]
+  declarations: [DashboardComponent, ExplanationComponent, DetailedChartsComponent, HistoricalTransactionsComponent]
 })
 export class DashboardModule {
 }

@@ -5,10 +5,32 @@ import {
   ChangeDetectorRef,
   Component,
   OnInit,
-  ViewChild
+  Input,
+  ViewChild,
+  OnChanges
 } from '@angular/core';
 import { getStyle } from '@coreui/utils/src';
 import { ChartjsComponent } from '@coreui/angular-chartjs';
+
+interface Metrics {
+  block_rate: number;
+  fraud_rate: number;
+  total_revenue: number;
+  chargeback_costs: number;
+}
+
+interface VariationWidget {
+  block_rate: Variation;
+  fraud_rate: Variation;
+  total_revenue: Variation;
+  chargeback_costs: Variation;
+}
+
+interface Variation {
+  exist: boolean;
+  percentage: number;
+  arrow: string;
+}
 
 @Component({
   selector: 'app-widgets-dropdown',
@@ -16,11 +38,15 @@ import { ChartjsComponent } from '@coreui/angular-chartjs';
   styleUrls: ['./widgets-dropdown.component.scss'],
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class WidgetsDropdownComponent implements OnInit, AfterContentInit {
+export class WidgetsDropdownComponent implements OnInit, OnChanges, AfterContentInit {
 
   constructor(
     private changeDetectorRef: ChangeDetectorRef
   ) {}
+
+  @Input() originalMetrics!: Metrics;
+  @Input() currentMetrics!: Metrics;
+  public variations!: VariationWidget;
 
   data: any[] = [];
   options: any[] = [];
@@ -115,6 +141,74 @@ export class WidgetsDropdownComponent implements OnInit, AfterContentInit {
 
   ngOnInit(): void {
     this.setData();
+    this.initializeVariations();
+  }
+
+  ngOnChanges(): void{
+    if (this.originalMetrics.block_rate != this.currentMetrics.block_rate){
+      this.variations.block_rate.exist = true;
+      this.variations.block_rate.percentage = (this.currentMetrics.block_rate - this.originalMetrics.block_rate);
+      if (this.variations.block_rate.percentage > 0){
+        this.variations.block_rate.arrow = "cilArrowTop";
+      } else {
+        this.variations.block_rate.arrow = "cilArrowBottom";
+      }
+    } else {this.variations.block_rate.exist = false;}
+
+    if (this.originalMetrics.fraud_rate != this.currentMetrics.fraud_rate){
+      this.variations.fraud_rate.exist = true;
+      this.variations.fraud_rate.percentage = (this.currentMetrics.fraud_rate - this.originalMetrics.fraud_rate);
+      if (this.variations.fraud_rate.percentage > 0){
+        this.variations.fraud_rate.arrow = "cilArrowTop";
+      } else {
+        this.variations.fraud_rate.arrow = "cilArrowBottom";
+      }
+    } else {this.variations.fraud_rate.exist = false;}
+
+    if (this.originalMetrics.total_revenue != this.currentMetrics.total_revenue){
+      this.variations.total_revenue.exist = true;
+      this.variations.total_revenue.percentage = (this.currentMetrics.total_revenue - this.originalMetrics.total_revenue)/this.originalMetrics.total_revenue;
+      if (this.variations.total_revenue.percentage > 0){
+        this.variations.total_revenue.arrow = "cilArrowTop";
+      } else {
+        this.variations.total_revenue.arrow = "cilArrowBottom";
+      }
+    } else {this.variations.total_revenue.exist = false;}
+    
+    if (this.originalMetrics.chargeback_costs != this.currentMetrics.chargeback_costs){
+      this.variations.chargeback_costs.exist = true;
+      this.variations.chargeback_costs.percentage = (this.currentMetrics.chargeback_costs - this.originalMetrics.chargeback_costs)/this.originalMetrics.chargeback_costs;
+      if (this.variations.chargeback_costs.percentage > 0){
+        this.variations.chargeback_costs.arrow = "cilArrowTop";
+      }  else {
+        this.variations.chargeback_costs.arrow = "cilArrowBottom";
+      }
+    } else {this.variations.chargeback_costs.exist = false;}
+  }
+
+  initializeVariations(): void {
+    this.variations = {
+      block_rate : {
+        exist : false,
+        percentage: 0,
+        arrow: ""
+      },
+      fraud_rate : {
+        exist : false,
+        percentage: 0,
+        arrow: ""
+      },
+      total_revenue : {
+        exist : false,
+        percentage: 0,
+        arrow: ""
+      },
+      chargeback_costs : {
+        exist : false,
+        percentage: 0,
+        arrow: ""
+      }
+    }
   }
 
   ngAfterContentInit(): void {

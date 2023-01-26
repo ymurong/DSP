@@ -8,11 +8,11 @@
 # Setup Local Dev Environment
 
 ## 1.virtualenv setup
-The following example use python 3.11. The version of python must be greater than 3.6.
+The following example use python 3.10. The version of python must be greater than 3.6.
 Make sure you run the following command in the backend directory so that the venv directory is in parallel with src directory.
 ```bash
-pip3.11 install virtualenv
-virtualenv venv --python=python3.11
+pip3.10 install virtualenv
+virtualenv venv --python=python3.10
 ```
 
 ## 2.dependencies installations
@@ -71,3 +71,11 @@ Run the following command to test.
 ```bash
 pytest
 ```
+
+
+# How to generate dump files
+#### 1. prediction_dump.csv
+we use the [prediction_generator.py](../classifier/prediction_generator.py) to generate prediction probability based on given model (for now, random forest is used as it is the best based on our experiments)
+
+#### 2. transactions_dump.csv
+we use the [transactions_dump.ipynb](./transactions_dump.ipynb) to generate all the historic transactions given by adyen.

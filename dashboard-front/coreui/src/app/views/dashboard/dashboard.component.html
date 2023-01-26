@@ -1,132 +1,69 @@
-<app-widgets-dropdown></app-widgets-dropdown>
-<c-row>
-  <c-col xs>
-    <c-card class="mb-4">
-      <c-card-header>
-        <b>Fraud Classifier </b>
-        <span cTooltip="Change the decision boundary to see how the different metrics that depict the historical transactions would react">
-          <svg class="text-info" cIcon name="cilInfo"></svg>
-        </span>
-      </c-card-header>
-      <c-card-body>
-        <label cLabel for="sensitivity">Decision Boundary - <strong>{{classification_sensitivity}}</strong></label>
-        <input [(ngModel)]="classification_sensitivity"
-              cFormControl
-              id=""
-              max="1"
-              min="0"
-              step="0.01"
-              type="range" />
-      </c-card-body>
-      <c-card-footer>
-        <c-row class="text-center" [md]="4" [xs]="2">
-          <c-col class="mb-sm-2 mb-0">
-            <div class="text-medium-emphasis">F1 Score
-              <span cTooltip="F1 score measures a model's overall accuracy">
-                <svg class="text-info" cIcon name="cilInfo"></svg>
-              </span>
-            </div>
-            <strong>81%</strong>
-          </c-col>
-          <c-col class="mb-sm-2 mb-0">
-            <div class="text-medium-emphasis">Precision 
-              <span cTooltip="Precision measures the percentage of transactions predicted as fraud that were correctly classified">
-                <svg class="text-info" cIcon name="cilInfo"></svg>
-              </span>
-            </div>
-            <strong>71%</strong>
-          </c-col>
-          <c-col class="mb-sm-2 mb-0">
-            <div class="text-medium-emphasis">Recall 
-              <span cTooltip="Recall measures the percentage of real fraud transactions that were correctly identified">
-                <svg class="text-info" cIcon name="cilInfo"></svg>
-              </span>
-            </div>
-            <strong>96%</strong>
-          </c-col>
-          <c-col class="mb-sm-2 mb-0">
-            <div style="display: flex; align-items: center; margin-top: 7px;">
-            <button type="button" class="btn btn-outline-success"><strong>Apply Changes </strong></button></div>
-          </c-col>
-        </c-row>
-      </c-card-footer>
-    </c-card>
-  </c-col>
-</c-row>
-
-
-
-<c-row>
-  <c-col xs>
-    <c-card class="mb-4">
-      <c-card-header><b>Transactions</b></c-card-header>
-      <c-card-body>
-        <table
-          [hover]="true"
-          [responsive]="true"
-          [striped]="true"
-          align="middle"
-          cTable
-          class="mb-0 border"
-        >
-          <thead cTableColor="light">
-          <tr>
-            <th>Email</th>
-            <th class="text-center">IP</th>
-            <th>Status</th>
-            <th>Risk Score</th>
-            <th>Action</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr *ngFor="let user of users; index as i">
-            <td>
-              <div>{{ user.name }}</div>
-              <div class="small text-medium-emphasis">
-                <span>{{ user.state }}</span> | Registered:
-                {{ user.registered }}
+<div *ngIf = "dataLoaded | async">
+  <div class="alert alert-warning" style="text-align: center;" role="alert" *ngIf="over3percent">
+    <strong>With this configuration, CHARGEBACK COSTS exceed 3% of the TOTAL REVENUE. Lower the decision boundary.</strong>
+  </div>
+  <app-widgets-dropdown [originalMetrics]="original_metrics_widget" [currentMetrics]="current_metrics_widget"></app-widgets-dropdown>
+  <c-row>
+    <c-col xs>
+      <c-card class="mb-4">
+        <c-card-header>
+          <b>Fraud Classifier </b>
+          <span cTooltip="Change the decision boundary to see how the different metrics that depict the historical transactions would react">
+            <svg class="text-info" cIcon name="cilInfo"></svg>
+          </span>
+        </c-card-header>
+        <c-card-body>
+          <label cLabel for="sensitivity">Decision Boundary - <strong>{{current_threshold}}</strong></label>
+          <input [(ngModel)]="current_threshold" id="slider" (change)="updateMetrics()"
+                cFormControl
+                id=""
+                max="1"
+                min="0"
+                step="0.01"
+                type="range" />
+        </c-card-body>
+        <c-card-footer>
+          <c-row class="text-center" [md]="4" [xs]="2">
+            <c-col class="mb-sm-2 mb-0">
+              <div class="text-medium-emphasis">F1 Score
+                <span cTooltip="F1 score measures a model's overall accuracy">
+                  <svg class="text-info" cIcon name="cilInfo"></svg>
+                </span>
               </div>
-            </td>
-            <td class="text-center">
-              <svg cIcon
-                id="{{ user.country + user.name }}"
-                name="cif{{ user.country }}"
-                size="xl"
-                title="{{ user.country }}"
-              ></svg>
-            </td>
-            <td>
-              <strong>{{ user.status }}</strong>
-            </td>
-            <td>
-              {{ user.riskscore }}
-            </td>
-            <td>
-              <button cButton color="primary" data-bs-toggle="modal" attr.data-bs-target="#modalExplain{{i}}">
-                explain
-              </button>
-            </td>
-            <div class="modal fade" id="modalExplain{{i}}" aria-hidden="true">
-              <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Why it has been {{user.status}}?</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    <app-explanation></app-explanation>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary">Report transaction</button>
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                  </div>
-                </div>
+              <strong>{{ model_rates.f1 * 100 | number:'2.2-2' }}%</strong>
+            </c-col>
+            <c-col class="mb-sm-2 mb-0">
+              <div class="text-medium-emphasis">Precision 
+                <span cTooltip="Precision measures the percentage of transactions predicted as fraud that were correctly classified">
+                  <svg class="text-info" cIcon name="cilInfo"></svg>
+                </span>
               </div>
-            </div>
-          </tr>
-          </tbody>
-        </table>
-      </c-card-body>
-    </c-card>
-  </c-col>
-</c-row>
+              <strong>{{ model_rates.precision * 100 | number:'2.2-2' }}%</strong>
+            </c-col>
+            <c-col class="mb-sm-2 mb-0">
+              <div class="text-medium-emphasis">Recall 
+                <span cTooltip="Recall measures the percentage of real fraud transactions that were correctly identified">
+                  <svg class="text-info" cIcon name="cilInfo"></svg>
+                </span>
+              </div>
+              <strong>{{ model_rates.recall * 100 | number:'2.2-2' }}%</strong>
+            </c-col>
+            <c-col class="mb-sm-2 mb-0">
+              <div style="display: flex; align-items: center; margin-top: 7px;">
+                <a *ngIf="!over3percent" role="button" class="btn btn-success">Change Boundary</a>
+                <a *ngIf="over3percent" role="button" class="btn btn-success disabled" aria-disabled="true">Change Boundary</a>
+              </div>
+            </c-col>
+          </c-row>
+        </c-card-footer>
+      </c-card>
+    </c-col>
+  </c-row>
+</div>
+
+<div *ngIf = "loading | async">
+  <div class="fade show" style="text-align: center; padding-top: calc(75vh / 2);"> <!--height: 100vh">-->
+    <i class="spinner-grow spinner-grow-sm"></i>
+    <span class="m-1">Loading...</span>
+  </div>
+</div>

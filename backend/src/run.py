@@ -5,6 +5,12 @@ import uvicorn
 from fastapi_pagination import add_pagination
 from fastapi.middleware.cors import CORSMiddleware
 import time
+from logging.config import dictConfig
+from src.resources.logging_conf import logging_config
+import logging
+
+dictConfig(logging_config)
+logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title='Risk API',
@@ -27,7 +33,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://127.0.0.1",
-        "http://127.0.0.1:8080"
+        "http://127.0.0.1:8080",
+        "http://localhost:4200"
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -36,7 +43,6 @@ app.add_middleware(
 
 app.include_router(transaction_app, prefix='/transactions', tags=['transactions'])
 app.include_router(metadata_app, prefix='/metadata', tags=['metadata'])
-
 
 add_pagination(app)
 
