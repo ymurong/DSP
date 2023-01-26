@@ -47,6 +47,7 @@ export class WidgetsDropdownComponent implements OnInit, OnChanges, AfterContent
   @Input() originalMetrics!: Metrics;
   @Input() currentMetrics!: Metrics;
   public variations!: VariationWidget;
+  public chargebackSimulation = false;
 
   data: any[] = [];
   options: any[] = [];
@@ -180,8 +181,10 @@ export class WidgetsDropdownComponent implements OnInit, OnChanges, AfterContent
       this.variations.chargeback_costs.percentage = (this.currentMetrics.chargeback_costs - this.originalMetrics.chargeback_costs)/this.originalMetrics.chargeback_costs;
       if (this.variations.chargeback_costs.percentage > 0){
         this.variations.chargeback_costs.arrow = "cilArrowTop";
+        this.chargebackSimulation = true;
       }  else {
         this.variations.chargeback_costs.arrow = "cilArrowBottom";
+        this.chargebackSimulation = false;
       }
     } else {this.variations.chargeback_costs.exist = false;}
   }

@@ -29,6 +29,10 @@ class BasePipeline(metaclass=ABCMeta):
     def explain(self, transaction_sample: np.ndarray, ) -> dict:
         pass
 
+    @abstractmethod
+    def get_influential_features(self, transaction_sample: np.ndarray, ) -> list:
+        pass
+
     def load_explainer(self, explainer_file_name):
         dir = os.path.dirname(os.path.abspath(__file__))
         fname = os.path.join(dir, explainer_file_name)
