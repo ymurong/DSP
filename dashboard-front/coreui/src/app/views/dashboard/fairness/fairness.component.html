@@ -1,0 +1,10 @@
+<div *ngIf = "chartsLoaded | async">
+  <div class="row">
+    <div class="column">
+      <c-chart id="fn_rate" [data]="data_fn_rate" type="bar" ></c-chart>
+    </div>
+    <div class="column">
+      <c-chart id="accuracy" [data]="data_balanced_accuracy" type="bar"></c-chart>
+    </div>
+  </div>
+</div>

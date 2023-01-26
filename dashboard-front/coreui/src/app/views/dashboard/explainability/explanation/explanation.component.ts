@@ -13,6 +13,10 @@ export class ExplanationComponent implements OnInit{
 
   @Input() psp_reference: bigint = BigInt(0);
   @Input() risk_score: number = 0;
+  public accepted :boolean = this.risk_score < 0.5;
+
+  public verbose_explanation: string[] = [];
+  public general_explanations: string[] = [];
 
   chartRadarData = {
     labels: ['General Evidences Score', 'IP Score', 'Card Behaviour Score', 'Amount Spent Score', 'E-Mail Score'],
@@ -49,7 +53,9 @@ export class ExplanationComponent implements OnInit{
   };
 
   ngOnInit(): void {
-    this.createRadarChart()
+    this.createRadarChart();
+    this.getMostInfluentialFeatures();
+    this.accepted = this.risk_score < 0.5;
   }
 
   createRadarChart(): void {
@@ -60,9 +66,77 @@ export class ExplanationComponent implements OnInit{
     )
   }
 
+  getMostInfluentialFeatures(): void {
+    this.explanationService.getInfluentialFeatures(Number(this.psp_reference)).subscribe(
+      (influential_features: any[]) => {
+        this.createReadableExplanation(influential_features)
+      }
+    )
+  }
+
   fillExplanationScores(explanationScores: any) {
     const data = [explanationScores["general_evidences"], explanationScores["ip_risk"], explanationScores["risk_card_behaviour"], explanationScores["risk_card_amount"], explanationScores["email_risk"]]
     this.chartRadarData.datasets[0].data = data;
+  }
+
+  createReadableExplanation(influential_features: string[]){
+    this.verbose_explanation = [];
+    for (let sentence of influential_features){
+      this.createOneSentence(sentence);
+    }
+    if (this.general_explanations.length > 0){
+      let features = ""
+      for (let explanation of this.general_explanations){
+        features += explanation;
+        features +=  " and "
+      }
+      let last_sentence = "General evidences such as (" + features.slice(0, -5) + ") have been decisive to block this transaction";
+      this.verbose_explanation.push(last_sentence);
+    }
+  }
+
+  createOneSentence(sentence: string): void {
+    let explanation: string = "";
+    if (this.risk_score > 0.5) {
+      const token0 = sentence.split("_")[0]
+      const N = sentence.split("_").slice(-2)[0].slice(0, -3).toString();    
+      const window = sentence.split("_").slice(-1).toString()
+      if (window == "window") {
+        if (token0 == "card"){
+          const type = sentence.split("_")[1]
+          if (type == "avg"){
+            explanation = "The amount spent with this CARD during the last " + N + " days.";
+          }else if (type == "nb"){
+            explanation = "The number of transactions made with this CARD during the last "+ N +" days it's been higher than usual.";
+          }
+        } else if (token0 == "email"){
+          const type = sentence.split("_")[2]
+          if (type == "risk"){
+            explanation = "There have been transactions made with this EMAIL during the last "+ N +" days that have been fraudulent.";
+          }else if (type == "nb"){
+            explanation = "The number of transactions made with this EMAIL during the last "+ N +" days it's been higher than usual.";
+          }
+        } else if (token0 == "ip"){
+          const type = sentence.split("_")[2]
+          if (type == "risk"){
+            explanation = "There have been transactions made with this IP during the last "+ N +" days that have been fraudulent.";
+          }else if (type == "nb"){
+            explanation = "The number of transactions made with this IP during the last "+ N +" days it's been higher than usual.";
+          }
+        }
+      } else if (sentence == "diff_tx_time_in_hours" || sentence == "is_night" || sentence == "is_weekend"){
+        explanation = "The time in the day this transaction has been made differs from what is usual.";
+      } else if (sentence == "same_country"  || sentence == "is_diff_previous_ip_country"){
+        explanation = "This transaction has been made in another country, which is unusual for this user.";
+      } else if (sentence == "is_credit"){
+        this.general_explanations.push("having used a credit card")
+      } else if (sentence == "shopper_interaction_POS"){
+        this.general_explanations.push("being an online transaction")
+      }
+    }
+    if (explanation != ""){
+      this.verbose_explanation.push(explanation);
+    } 
   }
 
 

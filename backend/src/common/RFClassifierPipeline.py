@@ -49,6 +49,28 @@ class RFClassifierPipeline(BasePipeline):
                 explanability_scores[explainable_group] += score
             return explanability_scores
         raise RuntimeError("explainer needs to be loaded first by invoking load_explainer method")
+    
+    def get_influential_features(self, transaction_sample: np.ndarray, ) -> list:
+        def get_feature_name(feature_array_exp):
+            for element in feature_array_exp:
+                if element in INPUT_FEATURES:
+                    return element
+            return feature_array_exp[0]
+        
+        if self.explainer is not None:
+            predict_fn_rf = lambda x: self.pipeline.predict_proba(x).astype(float)
+            exp = self.explainer.explain_instance(transaction_sample, predict_fn_rf, num_features=100)
+            influential_features = []
+            for feature in exp.as_list():
+                feature_name = get_feature_name(feature[0].split(" "))
+                score = feature[1]
+                if score >= 0:
+                    influential_features.append(feature_name)
+                    if len(influential_features) >= 5:
+                        break
+            return influential_features
+        raise RuntimeError("explainer needs to be loaded first by invoking load_explainer method")
+
 
 
 if __name__ == '__main__':
