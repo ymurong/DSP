@@ -13,9 +13,10 @@ export class ExplanationComponent implements OnInit{
 
   @Input() psp_reference: bigint = BigInt(0);
   @Input() risk_score: number = 0;
+  public accepted :boolean = this.risk_score < 0.5;
 
-  public influential_features: string[] = ["email_address_risk_30day_window", "card_nb_tx_30day_window", "email_address_risk_7day_window", "card_avg_amount_7day_window"];
   public verbose_explanation: string[] = [];
+  public general_explanations: string[] = [];
 
   chartRadarData = {
     labels: ['General Evidences Score', 'IP Score', 'Card Behaviour Score', 'Amount Spent Score', 'E-Mail Score'],
@@ -52,14 +53,23 @@ export class ExplanationComponent implements OnInit{
   };
 
   ngOnInit(): void {
-    this.createRadarChart()
+    this.createRadarChart();
+    this.getMostInfluentialFeatures();
+    this.accepted = this.risk_score < 0.5;
   }
 
   createRadarChart(): void {
     this.explanationService.getExplainabilityScore(Number(this.psp_reference)).subscribe(
       (explanationScores: any) => {
         this.fillExplanationScores(explanationScores)
-        this.createReadableExplanation()
+      }
+    )
+  }
+
+  getMostInfluentialFeatures(): void {
+    this.explanationService.getInfluentialFeatures(Number(this.psp_reference)).subscribe(
+      (influential_features: any[]) => {
+        this.createReadableExplanation(influential_features)
       }
     )
   }
@@ -69,10 +79,19 @@ export class ExplanationComponent implements OnInit{
     this.chartRadarData.datasets[0].data = data;
   }
 
-  createReadableExplanation(){
+  createReadableExplanation(influential_features: string[]){
     this.verbose_explanation = [];
-    for (let sentence of this.influential_features){
+    for (let sentence of influential_features){
       this.createOneSentence(sentence);
+    }
+    if (this.general_explanations.length > 0){
+      let features = ""
+      for (let explanation of this.general_explanations){
+        features += explanation;
+        features +=  " and "
+      }
+      let last_sentence = "General evidences such as (" + features.slice(0, -5) + ") have been decisive to block this transaction";
+      this.verbose_explanation.push(last_sentence);
     }
   }
 
@@ -106,12 +125,18 @@ export class ExplanationComponent implements OnInit{
           }
         }
       } else if (sentence == "diff_tx_time_in_hours" || sentence == "is_night" || sentence == "is_weekend"){
-        explanation = "The time in the day this transaction has been made differs from what is usual."
+        explanation = "The time in the day this transaction has been made differs from what is usual.";
       } else if (sentence == "same_country"  || sentence == "is_diff_previous_ip_country"){
-        explanation = "This transaction has been made in another country, which is unusual for this user."
+        explanation = "This transaction has been made in another country, which is unusual for this user.";
+      } else if (sentence == "is_credit"){
+        this.general_explanations.push("having used a credit card")
+      } else if (sentence == "shopper_interaction_POS"){
+        this.general_explanations.push("being an online transaction")
       }
     }
-    this.verbose_explanation.push(explanation);
+    if (explanation != ""){
+      this.verbose_explanation.push(explanation);
+    } 
   }
 
 

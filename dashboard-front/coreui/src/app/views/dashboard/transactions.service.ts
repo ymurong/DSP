@@ -45,4 +45,10 @@ export class TransactionsService {
     let explainabilityURI = `${environment.API}/transactions/${reference}/explainability_score`
     return this.http.get<Response>(explainabilityURI, {headers: this.headers, params: params})
   }
+
+  getInfluentialFeatures(reference: number): Observable<Response[]> {
+    let params = new HttpParams().set("explainer_name", "random_forest_lime");
+    let explainabilityURI = `${environment.API}/transactions/${reference}/explainability_features`
+    return this.http.get<Response[]>(explainabilityURI, {headers: this.headers, params: params})
+  }
 }

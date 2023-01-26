@@ -64,6 +64,14 @@ def get_explainability_scores(psp_reference: int, explainer_name: str) -> dict:
     explanability_scores = pipeline.explain(transaction_sample)
     return explanability_scores
 
+def get_explainability_features(psp_reference: int, explainer_name: str) -> list:
+    X_test, _ = load_test_data_by_psp_ref(psp_reference)
+    transaction_sample = X_test.values[0]
+    pipeline = explainer_factory(explainer_name=explainer_name)
+    explanability_features = pipeline.get_influential_features(transaction_sample)
+    return explanability_features
+                                 
+
 
 def get_classifier_metrics(classifier_name: str, threshold: float = 0.5) -> dict:
     X_test, y_test, A_test = load_test_data(sensitive_features_included=True)

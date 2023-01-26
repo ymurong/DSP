@@ -7,14 +7,20 @@
             </div>
         </div>
     </div>
-    <div class="col-md-5 ms-auto inline" style="margin-top: -43%; margin-right: 3%;">
-        <br><br><br>
-        Why exactly the transaction was rejected?
-        <br><br>
-        <!-- Both the IP and the amount spent in the purchase are unlikely according to the historical patterns of this user. The payment has been blocked because it's likely to have suffered an <b>Account Takeover Attack</b>.-->  
-        <ul>
-            <li *ngFor="let explanation of verbose_explanation" style="margin-bottom: 10px;">{{ explanation }} <br></li>
-        </ul>
+    <div class="col-md-5 ms-auto inline" style="margin-top: -43%; margin-right: 4%;">
+        <div *ngIf="accepted">
+            <h6 align="justify" style="margin-top: 150px; line-height: 1.7;">There is no signifiant set of attributes whose value is out of the usual behaviour. Therefore this transaction has been labeled as accepted.
+            </h6>
+        </div>
+        <div *ngIf="!accepted">
+            <h6 style="margin-top: 43px;">Most influential predictors:</h6>
+            <br>
+            <!-- Both the IP and the amount spent in the purchase are unlikely according to the historical patterns of this user. The payment has been blocked because it's likely to have suffered an <b>Account Takeover Attack</b>.-->  
+            <ul>
+                <li *ngFor="let explanation of verbose_explanation" style="margin-bottom: 10px;">{{ explanation }} <br></li>
+            </ul>
+        </div>
+
         <br>
     </div>
 </div>

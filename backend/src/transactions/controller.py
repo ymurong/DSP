@@ -37,6 +37,14 @@ def explain_transaction(
     explainability_scores = metadata_service.get_explainability_scores(psp_reference=psp_reference, explainer_name=explainer_name)
     return explainability_scores
 
+@transaction_app.get("/{psp_reference}/explainability_features", response_model=list,
+                     description="Get most influential features")
+def get_influential_features(
+        psp_reference: int,
+        explainer_name: ExplainerEnum = Query(ExplainerEnum.random_forest_lime)
+):
+    explainability_features = metadata_service.get_explainability_features(psp_reference=psp_reference, explainer_name=explainer_name)
+    return explainability_features
 
 @transaction_app.post("", response_model=schemas.ReadTransaction)
 def create_transaction(transaction: schemas.CreateTransaction, db: Session = Depends(get_db)):
