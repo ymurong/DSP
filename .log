@@ -1,0 +1,60 @@
+2023-01-31 19:49:14,195 [4467] DEBUG    root:195: [JupyterRequire] Configuration requested: {'paths': {'d3': 'https://d3js.org/d3.v5.min'}, 'shim': {}}
+2023-01-31 19:55:03,649 [4467] DEBUG    root:195: [JupyterRequire] Configuration requested: {'paths': {'d3': 'https://d3js.org/d3.v5.min'}, 'shim': {}}
+2023-01-31 19:55:04,918 [4467] DEBUG    root:195: [JupyterRequire] Configuration requested: {'paths': {'d3': 'https://d3js.org/d3.v5.min'}, 'shim': {}}
+2023-01-31 20:00:39,747 [5007] DEBUG    root:75: [JupyterRequire] Loading Jupyter Require extension.
+2023-01-31 20:00:39,747 [5007] DEBUG    root:93: [JupyterRequire] Initializing comms.
+2023-01-31 20:00:39,747 [5007] INFO     root:247: [JupyterRequire] Initializing comms.
+2023-01-31 20:00:39,750 [5007] DEBUG    root:195: [JupyterRequire] Configuration requested: {'paths': {}, 'shim': None}
+2023-01-31 20:00:39,750 [5007] INFO     root:271: [JupyterRequire] Comms have been successfully initialized.
+2023-01-31 20:00:39,750 [5007] DEBUG    root:97: [JupyterRequire] Registering comm targets.
+2023-01-31 20:00:40,260 [5007] DEBUG    root:75: [JupyterRequire] Loading Jupyter Require extension.
+2023-01-31 20:00:40,260 [5007] DEBUG    root:93: [JupyterRequire] Initializing comms.
+2023-01-31 20:00:40,260 [5007] INFO     root:247: [JupyterRequire] Initializing comms.
+2023-01-31 20:00:40,262 [5007] DEBUG    root:195: [JupyterRequire] Configuration requested: {'paths': {}, 'shim': None}
+2023-01-31 20:00:40,262 [5007] INFO     root:271: [JupyterRequire] Comms have been successfully initialized.
+2023-01-31 20:00:40,263 [5007] DEBUG    root:97: [JupyterRequire] Registering comm targets.
+2023-01-31 20:00:44,245 [5007] INFO     numexpr.utils:160: [JupyterRequire] NumExpr defaulting to 6 threads.
+2023-01-31 20:00:44,494 [5007] DEBUG    root:195: [JupyterRequire] Configuration requested: {'paths': {'d3': 'https://d3js.org/d3.v5.min'}, 'shim': {}}
+2023-01-31 20:00:44,495 [5007] DEBUG    root:195: [JupyterRequire] Configuration requested: {'paths': {'d3-array': 'https://d3js.org/d3-array.v2.min'}, 'shim': {}}
+2023-01-31 20:00:44,495 [5007] DEBUG    root:195: [JupyterRequire] Configuration requested: {'paths': {'moment': 'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.0/moment', 'chartjs': 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart'}, 'shim': {'chartjs': {'deps': ['moment']}}}
+2023-01-31 20:00:44,495 [5007] DEBUG    root:195: [JupyterRequire] Configuration requested: {'paths': OrderedDict([('datatables.net', 'https://cdn.datatables.net/1.10.18/js/jquery.dataTables'), ('datatables.net-buttons', 'https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min'), ('jszip', 'https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min'), ('buttons.colvis', 'https://cdn.datatables.net/buttons/1.5.6/js/buttons.colVis.min'), ('buttons.flash', 'https://cdn.datatables.net/buttons/1.5.6/js/buttons.flash.min'), ('buttons.html5', 'https://cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min'), ('buttons.print', 'https://cdn.datatables.net/buttons/1.5.6/js/buttons.print.min'), ('pdfmake', 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min'), ('vfsfonts', 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts'), ('datatables.responsive', 'https://cdn.datatables.net/responsive/2.2.2/js/dataTables.responsive.min'), ('datatables.scroller', 'https://cdn.datatables.net/scroller/2.0.0/js/dataTables.scroller.min'), ('datatables.select', 'https://cdn.datatables.net/select/1.3.0/js/dataTables.select.min')]), 'shim': OrderedDict([('datatables.net', {'exports': '$.fn.dataTable'}), ('datatables.net-buttons', {'deps': ['datatables.net']}), ('buttons.colvis', {'deps': ['jszip', 'datatables.net-buttons']}), ('buttons.flash', {'deps': ['jszip', 'datatables.net-buttons']}), ('buttons.html5', {'deps': ['jszip', 'datatables.net-buttons']}), ('buttons.print', {'deps': ['jszip', 'datatables.net-buttons']}), ('pdfmake', {'deps': ['datatables.net']}), ('vfsfonts', {'deps': ['datatables.net']})])}
+2023-01-31 20:01:46,318 [5007] DEBUG    root:75: [JupyterRequire] Loading Jupyter Require extension.
+2023-01-31 20:01:46,318 [5007] DEBUG    root:93: [JupyterRequire] Initializing comms.
+2023-01-31 20:01:46,319 [5007] INFO     root:247: [JupyterRequire] Initializing comms.
+2023-01-31 20:01:46,320 [5007] DEBUG    root:195: [JupyterRequire] Configuration requested: {'paths': {}, 'shim': None}
+2023-01-31 20:01:46,321 [5007] INFO     root:271: [JupyterRequire] Comms have been successfully initialized.
+2023-01-31 20:01:46,321 [5007] DEBUG    root:97: [JupyterRequire] Registering comm targets.
+2023-01-31 20:02:51,233 [5007] DEBUG    root:195: [JupyterRequire] Configuration requested: {'paths': {'d3': 'https://d3js.org/d3.v5.min'}, 'shim': {}}
+2023-01-31 20:02:51,234 [5007] DEBUG    root:195: [JupyterRequire] Configuration requested: {'paths': {'d3-array': 'https://d3js.org/d3-array.v2.min'}, 'shim': {}}
+2023-01-31 20:02:51,234 [5007] DEBUG    root:195: [JupyterRequire] Configuration requested: {'paths': {'moment': 'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.0/moment', 'chartjs': 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart'}, 'shim': {'chartjs': {'deps': ['moment']}}}
+2023-01-31 20:02:51,234 [5007] DEBUG    root:195: [JupyterRequire] Configuration requested: {'paths': OrderedDict([('datatables.net', 'https://cdn.datatables.net/1.10.18/js/jquery.dataTables'), ('datatables.net-buttons', 'https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min'), ('jszip', 'https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min'), ('buttons.colvis', 'https://cdn.datatables.net/buttons/1.5.6/js/buttons.colVis.min'), ('buttons.flash', 'https://cdn.datatables.net/buttons/1.5.6/js/buttons.flash.min'), ('buttons.html5', 'https://cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min'), ('buttons.print', 'https://cdn.datatables.net/buttons/1.5.6/js/buttons.print.min'), ('pdfmake', 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min'), ('vfsfonts', 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts'), ('datatables.responsive', 'https://cdn.datatables.net/responsive/2.2.2/js/dataTables.responsive.min'), ('datatables.scroller', 'https://cdn.datatables.net/scroller/2.0.0/js/dataTables.scroller.min'), ('datatables.select', 'https://cdn.datatables.net/select/1.3.0/js/dataTables.select.min')]), 'shim': OrderedDict([('datatables.net', {'exports': '$.fn.dataTable'}), ('datatables.net-buttons', {'deps': ['datatables.net']}), ('buttons.colvis', {'deps': ['jszip', 'datatables.net-buttons']}), ('buttons.flash', {'deps': ['jszip', 'datatables.net-buttons']}), ('buttons.html5', {'deps': ['jszip', 'datatables.net-buttons']}), ('buttons.print', {'deps': ['jszip', 'datatables.net-buttons']}), ('pdfmake', {'deps': ['datatables.net']}), ('vfsfonts', {'deps': ['datatables.net']})])}
+2023-01-31 20:04:29,505 [5007] DEBUG    root:75: [JupyterRequire] Loading Jupyter Require extension.
+2023-01-31 20:04:29,505 [5007] DEBUG    root:93: [JupyterRequire] Initializing comms.
+2023-01-31 20:04:29,505 [5007] INFO     root:247: [JupyterRequire] Initializing comms.
+2023-01-31 20:04:29,506 [5007] DEBUG    root:195: [JupyterRequire] Configuration requested: {'paths': {}, 'shim': None}
+2023-01-31 20:04:29,507 [5007] INFO     root:271: [JupyterRequire] Comms have been successfully initialized.
+2023-01-31 20:04:29,507 [5007] DEBUG    root:97: [JupyterRequire] Registering comm targets.
+2023-01-31 20:04:33,965 [5007] DEBUG    root:75: [JupyterRequire] Loading Jupyter Require extension.
+2023-01-31 20:04:33,965 [5007] DEBUG    root:93: [JupyterRequire] Initializing comms.
+2023-01-31 20:04:33,965 [5007] INFO     root:247: [JupyterRequire] Initializing comms.
+2023-01-31 20:04:33,967 [5007] DEBUG    root:195: [JupyterRequire] Configuration requested: {'paths': {}, 'shim': None}
+2023-01-31 20:04:33,967 [5007] INFO     root:271: [JupyterRequire] Comms have been successfully initialized.
+2023-01-31 20:04:33,968 [5007] DEBUG    root:97: [JupyterRequire] Registering comm targets.
+2023-01-31 20:05:19,739 [5007] DEBUG    root:75: [JupyterRequire] Loading Jupyter Require extension.
+2023-01-31 20:05:19,739 [5007] DEBUG    root:93: [JupyterRequire] Initializing comms.
+2023-01-31 20:05:19,739 [5007] INFO     root:247: [JupyterRequire] Initializing comms.
+2023-01-31 20:05:19,743 [5007] DEBUG    root:195: [JupyterRequire] Configuration requested: {'paths': {}, 'shim': None}
+2023-01-31 20:05:19,743 [5007] INFO     root:271: [JupyterRequire] Comms have been successfully initialized.
+2023-01-31 20:05:19,743 [5007] DEBUG    root:97: [JupyterRequire] Registering comm targets.
+2023-01-31 20:05:23,598 [5007] DEBUG    root:75: [JupyterRequire] Loading Jupyter Require extension.
+2023-01-31 20:05:23,598 [5007] DEBUG    root:93: [JupyterRequire] Initializing comms.
+2023-01-31 20:05:23,598 [5007] INFO     root:247: [JupyterRequire] Initializing comms.
+2023-01-31 20:05:23,600 [5007] DEBUG    root:195: [JupyterRequire] Configuration requested: {'paths': {}, 'shim': None}
+2023-01-31 20:05:23,600 [5007] INFO     root:271: [JupyterRequire] Comms have been successfully initialized.
+2023-01-31 20:05:23,600 [5007] DEBUG    root:97: [JupyterRequire] Registering comm targets.
+2023-01-31 20:05:38,671 [5007] DEBUG    root:75: [JupyterRequire] Loading Jupyter Require extension.
+2023-01-31 20:05:38,671 [5007] DEBUG    root:93: [JupyterRequire] Initializing comms.
+2023-01-31 20:05:38,671 [5007] INFO     root:247: [JupyterRequire] Initializing comms.
+2023-01-31 20:05:38,673 [5007] DEBUG    root:195: [JupyterRequire] Configuration requested: {'paths': {}, 'shim': None}
+2023-01-31 20:05:38,673 [5007] INFO     root:271: [JupyterRequire] Comms have been successfully initialized.
+2023-01-31 20:05:38,673 [5007] DEBUG    root:97: [JupyterRequire] Registering comm targets.

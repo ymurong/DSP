@@ -37,24 +37,6 @@ classifiers_dictionary = {
                                          flatten_transform=True, n_jobs=-1)
 }
 
-# input_features = ['is_credit', 'same_country', 'merchant_Merchant B',
-#                   'merchant_Merchant C', 'merchant_Merchant D', 'merchant_Merchant E',
-#                   'card_scheme_MasterCard', 'card_scheme_Other', 'card_scheme_Visa',
-#                   'device_type_Linux', 'device_type_MacOS', 'device_type_Other',
-#                   'device_type_Windows', 'device_type_iOS', 'shopper_interaction_POS',
-#                   'is_night', 'is_weekend', 'diff_tx_time_in_hours',
-#                   'is_diff_previous_ip_country', 'card_nb_tx_1day_window',
-#                   'card_avg_amount_1day_window', 'card_nb_tx_7day_window',
-#                   'card_avg_amount_7day_window', 'card_nb_tx_30day_window',
-#                   'card_avg_amount_30day_window', 'email_address_nb_tx_1day_window',
-#                   'email_address_risk_1day_window', 'email_address_nb_tx_7day_window',
-#                   'email_address_risk_7day_window', 'email_address_nb_tx_30day_window',
-#                   'email_address_risk_30day_window', 'ip_address_nb_tx_1day_window',
-#                   'ip_address_risk_1day_window', 'ip_address_nb_tx_7day_window',
-#                   'ip_address_risk_7day_window', 'ip_address_nb_tx_30day_window',
-#                   'ip_address_risk_30day_window']
-
-
 input_features = ['is_credit', 'same_country', 'merchant_Merchant B',
                   'merchant_Merchant C', 'merchant_Merchant D', 'merchant_Merchant E',
                   'card_scheme_MasterCard', 'card_scheme_Other', 'card_scheme_Visa',
@@ -70,10 +52,63 @@ input_features = ['is_credit', 'same_country', 'merchant_Merchant B',
                   'email_address_risk_30day_window', 'ip_address_nb_tx_1day_window',
                   'ip_address_risk_1day_window', 'ip_address_nb_tx_7day_window',
                   'ip_address_risk_7day_window', 'ip_address_nb_tx_30day_window',
-                  'ip_address_risk_30day_window',
-                  'CHScore', 'CHScore_ST', 'CHScore_MT', 'CHScore_LT',
-                  'MerScore', 'MerScore_ST', 'MerScore_MT', 'MerScore_LT', 'TrxScore',
-                  'TrxScore_ST', 'TrxScore_MT', 'TrxScore_LT']
+                  'ip_address_risk_30day_window']
+
+
+# input_features = ['is_credit', 'same_country', 'merchant_Merchant B',
+#                   'merchant_Merchant C', 'merchant_Merchant D', 'merchant_Merchant E',
+#                   'card_scheme_MasterCard', 'card_scheme_Other', 'card_scheme_Visa',
+#                   'device_type_Linux', 'device_type_MacOS', 'device_type_Other',
+#                   'device_type_Windows', 'device_type_iOS', 'shopper_interaction_POS',
+#                   'is_night', 'is_weekend', 'diff_tx_time_in_hours',
+#                   'is_diff_previous_ip_country', 'card_nb_tx_1day_window',
+#                   'card_avg_amount_1day_window', 'card_nb_tx_7day_window',
+#                   'card_avg_amount_7day_window', 'card_nb_tx_30day_window',
+#                   'card_avg_amount_30day_window', 'email_address_nb_tx_1day_window',
+#                   'email_address_risk_1day_window', 'email_address_nb_tx_7day_window',
+#                   'email_address_risk_7day_window', 'email_address_nb_tx_30day_window',
+#                   'email_address_risk_30day_window', 'ip_address_nb_tx_1day_window',
+#                   'ip_address_risk_1day_window', 'ip_address_nb_tx_7day_window',
+#                   'ip_address_risk_7day_window', 'ip_address_nb_tx_30day_window',
+#                   'ip_address_risk_30day_window',
+#                   'IPScore', 'IPScore_ST',
+#                   'IPScore_MT', 'IPScore_LT', 'EmailScore', 'EmailScore_ST',
+#                   'EmailScore_MT', 'EmailScore_LT', 'CHScore', 'CHScore_ST', 'CHScore_MT',
+#                   'CHScore_LT', 'MerScore', 'MerScore_ST', 'MerScore_MT', 'MerScore_LT',
+#                   'TrxScore', 'TrxScore_ST', 'TrxScore_MT', 'TrxScore_LT']
+
+# input_features = ['is_credit', 'same_country', 'shopper_interaction_POS', 'merchant_Merchant B',
+#                   'merchant_Merchant C', 'merchant_Merchant D', 'merchant_Merchant E',
+#                   'is_night', 'is_weekend', 'diff_tx_time_in_hours',
+#                   'is_diff_previous_ip_country', 'card_nb_tx_1day_window',
+#                   'card_avg_amount_1day_window', 'card_nb_tx_7day_window',
+#                   'card_avg_amount_7day_window', 'card_nb_tx_30day_window',
+#                   'card_avg_amount_30day_window', 'email_address_nb_tx_1day_window',
+#                   'email_address_risk_1day_window', 'email_address_nb_tx_7day_window',
+#                   'email_address_risk_7day_window', 'email_address_nb_tx_30day_window',
+#                   'email_address_risk_30day_window', 'ip_address_nb_tx_1day_window',
+#                   'ip_address_risk_1day_window', 'ip_address_nb_tx_7day_window',
+#                   'ip_address_risk_7day_window', 'ip_address_nb_tx_30day_window',
+#                   'ip_address_risk_30day_window']
+
+# input_features = ['is_credit', 'same_country', 'shopper_interaction_POS', 'merchant_Merchant B',
+#                   'merchant_Merchant C', 'merchant_Merchant D', 'merchant_Merchant E',
+#                   'is_night', 'is_weekend', 'diff_tx_time_in_hours',
+#                   'is_diff_previous_ip_country', 'card_nb_tx_1day_window',
+#                   'card_avg_amount_1day_window', 'card_nb_tx_7day_window',
+#                   'card_avg_amount_7day_window', 'card_nb_tx_30day_window',
+#                   'card_avg_amount_30day_window', 'email_address_nb_tx_1day_window',
+#                   'email_address_risk_1day_window', 'email_address_nb_tx_7day_window',
+#                   'email_address_risk_7day_window', 'email_address_nb_tx_30day_window',
+#                   'email_address_risk_30day_window', 'ip_address_nb_tx_1day_window',
+#                   'ip_address_risk_1day_window', 'ip_address_nb_tx_7day_window',
+#                   'ip_address_risk_7day_window', 'ip_address_nb_tx_30day_window',
+#                   'ip_address_risk_30day_window',
+#                   'IPScore', 'IPScore_ST',
+#                   'IPScore_MT', 'IPScore_LT', 'EmailScore', 'EmailScore_ST',
+#                   'EmailScore_MT', 'EmailScore_LT', 'CHScore', 'CHScore_ST', 'CHScore_MT',
+#                   'CHScore_LT',
+#                   'TrxScore', 'TrxScore_ST', 'TrxScore_MT', 'TrxScore_LT']
 
 
 def extract_train_test(test_start_month, final_feature_path="../feature-engineering/final_features.csv"):
@@ -126,7 +161,7 @@ def assessment(fitted_models_and_predictions_dictionary, df_test, threshold=0.5)
     return performances
 
 
-def plot_feature_importances(fitted_models_and_predictions_dictionary, nlargest=15, figsize=(20, 10), fontsize=10,
+def plot_feature_importances(fitted_models_and_predictions_dictionary, nlargest=25, figsize=(20, 10), fontsize=10,
                              export=True, show=False):
     generate_feature_importances_csv(fitted_models_and_predictions_dictionary)
     for classifier_name, model_and_predictions in fitted_models_and_predictions_dictionary.items():
@@ -198,19 +233,17 @@ def report(text, report_path="cross_val_score.txt", only_print=True):
 
 if __name__ == '__main__':
     threshold = 0.5
-    train_duration = 3
+    train_duration = 1
     test_duration = 1
     delay_duration = 1
     # adyen_results()
 
     # dump model
-    fitted_models_and_predictions_dictionary = evaluate(test_start_month=11)
+    fitted_models_and_predictions_dictionary = evaluate(test_start_month=12)
     dump_models(fitted_models_and_predictions_dictionary)
 
     # generate cross_validation results
     # cross_validation(test_start_month_marker=5, test_end_month_marker=12)
-
-
 
 # Without Graph
 # >>>>>>  Training months: 8 -> 10
