@@ -7,6 +7,7 @@ import numpy as np
 
 def conditional_entropy(x, y):
     # entropy of x given y
+    # in our usecase, y would be the predictor and x would be the target variable
     y_counter = Counter(y)
     xy_counter = Counter(list(zip(x, y)))
     total_occurrences = sum(y_counter.values())
